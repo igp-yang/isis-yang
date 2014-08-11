@@ -1,4 +1,4 @@
-YANG-I-D
-========
+ISIS-YANG
+=========
 
-Skeleton for YANG & Internet Draft development repo
+Development of a YANG module and Internet-Draft for the ISIS routing protocol.
