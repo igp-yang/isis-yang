@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM ".tools/schema/rfc2629.dtd" [
+<!ENTITY % netmod SYSTEM ".tools/bplate/netmod.ent">
+%netmod;
+<!ENTITY % figures SYSTEM "figures.ent">
+%figures;
+<!ENTITY % yang SYSTEM "yang.ent">
+%yang;
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC6020 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
+<!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
+<!ENTITY RFC6242 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6242.xml">
+<!ENTITY RFC6536 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6536.xml">
+<!ENTITY YANG-RTG SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netmod-routing-cfg.xml">
+]>
+
+<?rfc strict="yes" ?>
+<?rfc toc="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes" ?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+
+<rfc category="std">
+  <front>
+    <title abbrev="isis-cfg">YANG Data Model for ISIS protocol</title>
+    <author fullname="Stephane Litkowski" initials="S" surname="Litkowski">
+      <organization>Orange</organization>
+      <address>
+        <email>stephane.litkowski@orange.com</email>
+      </address>
+    </author>
+    <date year="2014"/>
+    <area/>
+    <workgroup>ISIS Working Group</workgroup>
+
+    <abstract>
+      <t>This document defines a YANG data model that can be used to
+      configure and manage ISIS protocol.</t>
+    </abstract>
+    <note title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+      NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and
+      "OPTIONAL" in this document are to be interpreted as described
+      in <xref target="RFC2119"/>.</t>
+    </note>
+  </front>
+  <middle>
+    <section anchor="introduction" title="Introduction">
+      <t>
+      This document defines a YANG data model for ISIS routing
+      protocol.</t>
+      <t>The data model covers configuration of an ISIS routing
+      protocol instance as well as operational states.</t>
+      <section anchor="tree-info" title="Tree diagram">
+        <t>A simplified graphical representation of the data model is
+        presented in <xref target="design"/>.</t>
+
+	&treesym;
+
+      </section>
+    </section>
+    <section anchor="design" title="Design of the Data Model">
+      <t>The ISIS YANG module is divided in two main containers:
+      <list style="symbols">
+	<t>isis-cfg: that contains writable configuration
+	objects.</t>
+	<t>isis-state: that contains read-only states.</t>
+      </list></t>
+      <t>The container isis-cfg and isis-state are augmenting the
+      "routing-protocol" lists in ietf-routing module with specific
+      ISIS parameters.</t>
+      <t>The figure below describe the overall structure of the isis
+      YANG module:</t>
+
+      <figure>
+	&ietf-isis.tree;
+      </figure>
+
+      <section anchor="yang-isis-global" title="ISIS Configuration">
+        <t>The ISIS configuration container is divided in:
+	<list style="symbols">
+	  <t>Global parameters.</t>
+	  <t>Level specific parameters (see <xref
+	  target="yang-level"/>).</t>
+	  <t>Per interface configuration (see <xref
+	  target="yang-interface"/>).</t>
+	</list></t>
+      </section>
+
+      <section anchor="yang-multitopology" title="Multitopology Parameters">
+        <t>The multitopology section is used to enable support of MT
+        extensions for specific address families.</t>
+        <t>A boolean is associated with each topology type, defining
+        if the topology is enabled or not.</t>
+
+	<figure>
+	    &isis-multi-topology-cfg.tree;
+	</figure>
+
+      </section>
+
+      <section anchor="yang-level" title="Per-Level Parameters">
+        <t>The level parameter section of the ISIS instance describes
+        the global parameters for level 1 and 2 including
+        authentication, protocol preferences, default metrics ...</t>
+        <t>Level specific parameters override parameters contained
+        directly under isis-cfg container.</t>
+
+	<figure>
+	    &isis-level-1-cfg.tree;
+	</figure>
+
+      </section>
+
+      <section anchor="yang-interface" title="Per-Interface Parameters">
+        <t>The per-interface section of the ISIS instance describes
+        the interface specific parameters.</t>
+        <t>Each interface has interface-specific parameters and
+        level-specific parameters. A level-specific parameter always
+        override interface-specific parameter and an
+        interface-specific parameter always override an isis global
+        parameter (defined in isis-cfg).
+	</t>
+
+	<figure>
+	    &interfaces.tree;
+	</figure>
+
+      </section>
+
+      <section anchor="yang-op" title="Operational State">
+        <t>isis-state container provides operational states for
+        ISIS. This container is divided in multiple components:
+	<list style="symbols">
+	  <t>adjacencies: provides state information about current
+	  ISIS adjacencies.</t>
+	  <t>spf-log: provides information about SPF events on the
+	  node.</t>
+	  <t>lsp-log: provides information about LSP events on the
+	  node (reception of an LSP or modification of local LSP).</t>
+	  <t>database: provides details on current LSDB.</t>
+	  <t>hostname: provides information about system-id to
+	  hostname mappings.</t>
+	</list></t>
+      </section>
+
+    </section>
+
+    <section anchor="RPC" title="RPC Operations">
+      <t>The "ietf-isis" module defines two RPC operations:
+      <list style="symbols">
+	<t>clear-isis-database: reset the content of a particular ISIS
+	database and restart database synchronization with the
+	neighbors.</t>
+	<t>clear-isis-adjacency: restart a particular set of ISIS
+	adjacencies.</t>
+      </list></t>
+
+      <figure>
+	  &rpcs.tree;
+      </figure>
+
+    </section>
+
+    <section anchor="notif" title="Notifications">
+      <t>The "ietf-isis" module a new notification
+      "isis-adjacency-updown".  This notification is triggered when an
+      ISIS adjacency moves to Up or Down state.</t>
+      <t>This notification provides details on the affected adjacency
+      and its new state.</t>
+
+      <figure>
+	&notifications.tree;
+      </figure>
+
+    </section>
+
+    <section anchor="interaction" title="Interaction with Other YANG Modules">
+      <t>The "isis-cfg" container augments the
+      "/rt:routing/rt:routing-instance/rt:routing-protocols/routing-protocol"
+      container of the ietf-routing module by defining ISIS specific
+      parameters.</t>
+      <t>The "isis-state" container augments the
+      "/rt:routing-state/rt:routing-instance/rt:routing-protocols/routing-protocol"
+      container of the ietf-routing module by defining ISIS specific
+      operational states.</t>
+      <t>Some ISIS specific routes attributes are added to route
+      objects of the ietf-routing module by augmenting
+      "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route" and
+      "/rt:active-route/rt:output/rt:route".</t>
+    </section>
+
+    <section anchor="yang" title="YANG Module">
+
+      <figure>
+	&ietf-isis.yang;
+      </figure>
+
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>Configuration and state data defined in this document are
+      designed to be accessed via the NETCONF protocol <xref
+      target="RFC6241"/>.</t>
+      <t>As ISIS is an IGP protocol (critical piece of the network),
+      ensuring stability and security of the protocol is mandatory for
+      the network service.</t>
+      <t>Authors recommends to implement NETCONF access control model
+      (<xref target="RFC6536"/>) to restrict access to all or part of
+      the configuration to specific users. Access control to RPCs is
+      also critical as RPC permits to clear protocol datastructures
+      that would definitively impact the network service. This kind of
+      RPC needs only to be used in specific cases by well-known
+      experienced users.</t>
+      <t>Authors consider that all the configuration is considered as
+      sensitive/vulnerable as well as RPCs. But security teams can
+      decide to open some part of the configuration to less
+      experienced users depending on the internal organization, for
+      example:
+
+      <list style="symbols">
+	<t>User FullWrite: would access to the whole data model. This
+	kind of profile may be restricted to few experienced
+	people.</t>
+	<t>User PartialWrite: would only access to configuration part
+	within /isis/interfaces/interface.  So this kind of profile is
+	restricted to creation/modification/deletion of
+	interfaces. This profile does not have access to
+	RPC.</t><t>User Read: would only access to state part
+	/isis-state.</t>
+      </list></t>
+      <t>Unauthorized access to configuration or RPC may cause high
+      damages to the network service.</t>
+      <t>The /isis-state/database may contain authentication
+      information.  As presented in the description of the
+      /isis-state/database/level-1/lsp/authentication/authentication-key,
+      the authentication MUST never be presented in plaintext format
+      for security reason. Authors recommends the usage of MD5 to
+      present the authentication-key.</t>
+      <t>Some authentication-key may also be present in the /isis
+      configuration.  When configuring ISIS using the NETCONF
+      protocol, authors recommends the usage of secure transport of
+      NETCONF using SSH (<xref target="RFC6242"/>).</t>
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+      <t>TBD.</t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>TBD.</t>
+    </section>
+
+  </middle>
+  <back>
+    <references title="Normative References">
+      &RFC2119;
+      &RFC6020;
+      &RFC6241;
+      &RFC6242;
+      &RFC6536;
+      &YANG-RTG;
+    </references>
+    <section anchor="rpc-example" title="Example: NETCONF &lt;get&gt; Reply">
+      <t>This section gives an example of a reply to the NETCONF
+      &lt;get&gt; request for a device that implements the data model
+      defined in this document.  The example is written in XML.</t>
+
+      <figure>
+	&example-get-reply.xml;
+      </figure>
+
+    </section>
+  </back>
+</rfc>
