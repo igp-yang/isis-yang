@@ -34,7 +34,7 @@ hello.xml: $(yams) hello-external.ent
 	@echo '<capabilities>' >> $@
 	@echo '<capability>urn:ietf:params:netconf:base:1.1</capability>' >> $@
 	@for m in $(yams); do \
-	  capa=$$(pyang $(PYANG_OPTS) -f capability $$m | sed 's/&/&amp;/g'); \
+	  capa=$$(pyang $(PYANG_OPTS) -f capability --capability-entity $$m); \
 	  if [ "$$capa" != "" ]; then \
 	    echo "<capability>$$capa</capability>" >> $@; \
 	  fi \
