@@ -1,7 +1,7 @@
-I_D = # Name of the Internet-Draft (without revision)
-REVNO = # I-D revision number
+I_D = draft-litkowski-isis-yang-isis-cfg
+REVNO = 01
 DATE ?= $(shell date +%F)
-MODULES =
+MODULES = ietf-isis
 FIGURES = model.tree
 EXAMPLE_BASE = example
 EXAMPLE_TYPE = get-reply
