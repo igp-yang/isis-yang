@@ -44,6 +44,7 @@ module ietf-isis {
 		* Add notification for LSP reception
 		* Use feature for reference BW
 		";
+		reference "RFC XXXX: YANG Data Model for ISIS Protocol";
 	}
 	revision 2014-06-25 {
 		description "
@@ -1258,7 +1259,6 @@ module ietf-isis {
 			}
 			leaf-list area-address {
 				type area-address;
-				min-elements 1;
 				max-elements 3;
 				description 
 				 "List of areas supported by the 
