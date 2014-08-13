@@ -2,7 +2,8 @@ I_D = draft-litkowski-isis-yang-isis-cfg
 REVNO = 01
 DATE ?= $(shell date +%F)
 MODULES = ietf-isis
-FIGURES = model.tree
+FIGURES = ietf-isis.tree isis-multi-topology-cfg.tree isis-level-1-cfg.tree \
+	  interfaces.tree rpcs.tree notifications.tree
 EXAMPLE_BASE = example
 EXAMPLE_TYPE = get-reply
 baty = $(EXAMPLE_BASE)-$(EXAMPLE_TYPE)
@@ -90,6 +91,9 @@ validate: $(EXAMPLE_INST) $(schemas)
 
 model.tree: hello.xml
 	pyang $(PYANG_OPTS) -f tree -o $@ -L $<
+
+ietf-isis.tree: $(yams)
+	pyang $(PYANG_OPTS) -f tree -o $@ --tree-depth 2 $<
 
 clean:
 	@rm -rf *.rng *.rnc *.sch *.dsrl hello.xml model.tree \
