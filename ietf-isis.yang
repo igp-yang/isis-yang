@@ -40,11 +40,16 @@ module ietf-isis {
 		* Add packet-counters, interface-counters, system-counters 
 		  states
 		* Add 3way handshake support
-		* Rename isis-adjacency-updown to isis-adjacency-change
+		* Rename isis-adjacency-updown to adjacency-change
 		* Add notification for LSP reception
 		* Use feature for reference BW
+		* Add lsp-retransmit-interval on interfaces
+		* Rename lsp-interval to lsp-pacing-interval
+		* Add ispf support as feature
+		* Add spf delay support as feature (2step & exp backoff)
+		* Add maximum-area-addresses
+		* Add default-metric
 		";
-		reference "RFC XXXX: YANG Data Model for ISIS Protocol";
 	}
 	revision 2014-06-25 {
 		description "
@@ -115,7 +120,29 @@ module ietf-isis {
 			"Graceful restart support as per RFC5306.";
 	}
 	
-	typedef isis-instance-state-ref {
+	feature ispf {
+		description
+			"Incremental SPF computation.";
+	}
+	
+	feature spf-exp-delay {
+		description
+			"SPF computation delay using exponential backoff
+			 algorithm.";
+	}
+	
+	feature spf-2step-delay {
+		description
+			"SPF computation delay using 2step delay
+			 algorithm.";
+	}
+	
+	feature maximum-area-addresses {
+		description
+			"Support of maximum-area-addresses config.";
+	}
+	
+	typedef instance-state-ref {
 		type leafref {
 			path "/rt:routing-state/rt:routing-instance/"
 			+"rt:routing-protocols/rt:routing-protocol/rt:name";
@@ -201,7 +228,7 @@ module ietf-isis {
 		"This type defines available authentication types.";
 	}
 	
-	typedef isis-level {
+	typedef level {
 		type enumeration {
 			enum "level-1" {
 				description 
@@ -221,7 +248,7 @@ module ietf-isis {
 		
 	}
 	
-	typedef isis-level-number {
+	typedef level-number {
 		type uint8 {
 			range "1 .. 2";
 		}
@@ -229,7 +256,7 @@ module ietf-isis {
 		 "This type defines a current isis level.";
 	}
 	
-	typedef isis-lsp-id {
+	typedef lsp-id {
 		type string {
 			pattern 
 			 '[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.[0-9A-Fa-f]'
@@ -269,7 +296,7 @@ module ietf-isis {
 		 
 	}
 	
-	typedef isis-system-id {
+	typedef system-id {
 		type string {
 			pattern
 			 '[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.00';
@@ -279,7 +306,7 @@ module ietf-isis {
 		  system id looks like : 0143.0438.AeF0.00";
 	}
 	
-	typedef isis-wide-metric {
+	typedef wide-metric {
 		type uint32 {
 			range "0 .. 16777215";
 		}
@@ -288,7 +315,7 @@ module ietf-isis {
 		  of ISIS metric.";
 	}
 	
-	typedef isis-std-metric {
+	typedef std-metric {
 		type uint8 {
 			range "0 .. 63";
 		}
@@ -326,7 +353,7 @@ module ietf-isis {
 			 "Describes the name of the ISIS instance.";
 		}
 		leaf instance-level {
-			type isis-level;
+			type level;
 			description
 			 "Describes the ISIS level of the instance.";
 		}
@@ -342,7 +369,7 @@ module ietf-isis {
 			 "Describes the name of the ISIS interface.";
 		}
 		leaf interface-level {
-			type isis-level;
+			type level;
 			description
 			 "Describes the ISIS level of the interface.";
 		}
@@ -353,7 +380,7 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-route-content {
+	grouping route-content {
 		description
 		 "This group add isis-specific route properties.";
 		leaf metric {
@@ -412,7 +439,7 @@ module ietf-isis {
 		when "rt:source-protocol = 'isis:isis'" {
 			description "ISIS-specific route attributes.";
 		}
-		uses isis-route-content;
+		uses route-content;
 		description
 		 "This augments route object in RIB with ISIS-specific
 		  attributes.";
@@ -420,12 +447,12 @@ module ietf-isis {
 	
 	augment "/rt:active-route/rt:output/rt:route"
 	   {
-		uses isis-route-content;
+		uses route-content;
 		description "ISIS-specific route attributes.";
 	  }
 	
 	
-	grouping isis-prefix-ipv4-std {
+	grouping prefix-ipv4-std {
 		description
 		 "This group defines attributes of an 
 		  IPv4 standard prefix.";
@@ -450,13 +477,13 @@ module ietf-isis {
 			 "This leaf describes the IPv4 prefix len in bits";
 		}
 		leaf default-metric {
-			type isis-std-metric;
+			type std-metric;
 			description
 			 "This leaf describes the isis default metric value";
 		}
 		container delay-metric {
 			leaf metric {
-				type isis-std-metric;
+				type std-metric;
 				description
 				 "This leaf describes the isis delay metric value";
 			}
@@ -472,7 +499,7 @@ module ietf-isis {
 		}
 		container expense-metric {
 			leaf metric {
-				type isis-std-metric;
+				type std-metric;
 				description
 				 "This leaf describes the isis delay metric value";
 			}
@@ -487,7 +514,7 @@ module ietf-isis {
 		}
 		container error-metric {
 			leaf metric {
-				type isis-std-metric;
+				type std-metric;
 				description
 				 "This leaf describes the isis delay metric value";
 			}
@@ -503,7 +530,7 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-prefix-ipv4-extended {
+	grouping prefix-ipv4-extended {
 		description
 		 "This group defines attributes of an 
 		  IPv4 extended prefix.";
@@ -524,7 +551,7 @@ module ietf-isis {
 		}
 
 		leaf metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description
 			 "This leaf describes the isis metric value";
 		}
@@ -542,7 +569,7 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-prefix-ipv6-extended {
+	grouping prefix-ipv6-extended {
 		description
 		 "This group defines attributes of an 
 		  IPv6 prefix.";
@@ -563,7 +590,7 @@ module ietf-isis {
 		}
 
 		leaf metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description
 			 "This leaf describes the isis metric value";
 		}
@@ -581,28 +608,28 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-neighbor-extended {
+	grouping neighbor-extended {
 		description
 		 "This group defines attributes of an 
 		  ISIS extended neighbor.";
 		leaf neighbor-id {
-			type isis-system-id;
+			type system-id;
 			description
 			 "This leaf describes the system-id of the neighbor.";
 		}
 		leaf metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description
 			 "This leaf describes the isis metric value";
 		}
 	}
 	
-	grouping isis-neighbor {
+	grouping neighbor {
 		description
 		 "This group defines attributes of an 
 		  ISIS standard neighbor.";
 		leaf neighbor-id {
-			type isis-system-id;
+			type system-id;
 			description
 			 "This leaf describes the system-id of the neighbor.";
 		}
@@ -612,13 +639,13 @@ module ietf-isis {
 			 "This leaf expresses the value of I/E bit.";
 		}
 		leaf default-metric {
-			type isis-std-metric;
+			type std-metric;
 			description
 			 "This leaf describes the isis default metric value";
 		}
 		container delay-metric {
 			leaf metric {
-				type isis-std-metric;
+				type std-metric;
 				description
 				 "This leaf describes the isis delay metric value";
 			}
@@ -633,7 +660,7 @@ module ietf-isis {
 		}
 		container expense-metric {
 			leaf metric {
-				type isis-std-metric;
+				type std-metric;
 				description
 				 "This leaf describes the isis delay metric value";
 			}
@@ -648,7 +675,7 @@ module ietf-isis {
 		}
 		container error-metric {
 			leaf metric {
-				type isis-std-metric;
+				type std-metric;
 				description
 				 "This leaf describes the isis delay metric value";
 			}
@@ -663,12 +690,12 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-database {
+	grouping database {
 		description
 		 "This group defines attributes of an 
 		  ISIS database (Link State DB).";
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "This leaf describes the LSP ID of the LSP.";
 		}
@@ -729,12 +756,12 @@ module ietf-isis {
 		container is-neighbor {
 			list neighbor {
 				key "neighbor-id";
-				uses isis-neighbor-extended;	
+				uses neighbor;	
 				description
 				 "List of neighbors.";
 			}
 			description 
-			 "This leaf describes list of ISIS extended neighbors.
+			 "This leaf describes list of ISIS neighbors.
 			 ISIS reference is TLV 2.";
 		}
 		
@@ -761,7 +788,7 @@ module ietf-isis {
 		container extended-is-neighbor {
 			list neighbor {
 				key "neighbor-id";
-				uses isis-neighbor-extended;
+				uses neighbor-extended;
 				description
 				 "List of neighbors.";
 			}
@@ -774,7 +801,7 @@ module ietf-isis {
 		container ipv4-internal-reachability {
 			list prefixes {
 				key "ip-prefix";
-				uses isis-prefix-ipv4-std;
+				uses prefix-ipv4-std;
 				description
 				 "List of prefixes.";
 			}
@@ -795,7 +822,7 @@ module ietf-isis {
 		container ipv4-external-reachability {
 			list prefixes {
 				key "ip-prefix";
-				uses isis-prefix-ipv4-std;
+				uses prefix-ipv4-std;
 				description
 				 "List of prefixes.";
 			}
@@ -825,7 +852,7 @@ module ietf-isis {
 			
 			list prefixes {
 				key "ip-prefix";
-				uses isis-prefix-ipv4-extended;
+				uses prefix-ipv4-extended;
 				description
 				 "List of prefixes.";
 			}
@@ -863,7 +890,7 @@ module ietf-isis {
 					 "This leaf defines the identifier
 					  of a topology.";
 				}
-				uses isis-neighbor-extended;
+				uses neighbor-extended;
 				description
 				 "List of neighbors.";
 			}
@@ -934,7 +961,7 @@ module ietf-isis {
 					 "This leaf defines the identifier
 					  of a topology.";
 				}
-				uses isis-prefix-ipv4-extended;
+				uses prefix-ipv4-extended;
 				description
 				 "List of prefixes.";
 			
@@ -957,7 +984,7 @@ module ietf-isis {
 					 "This leaf defines the identifier
 					  of a topology.";
 				}
-				uses isis-prefix-ipv6-extended;
+				uses prefix-ipv6-extended;
 				description
 				 "List of prefixes.";
 			}
@@ -971,7 +998,7 @@ module ietf-isis {
 		container ipv6-reachability {
 			list prefixes {
 				key "ip-prefix";
-				uses isis-prefix-ipv6-extended;
+				uses prefix-ipv6-extended;
 				description
 				 "List of prefixes.";
 			}
@@ -996,7 +1023,7 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-address-family-cfg {
+	grouping address-family-cfg {
 		description
 		 "This group defines address-family-cfg
 		  global configuration for ISIS.";
@@ -1028,7 +1055,7 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-interface-hello-cfg {
+	grouping interface-hello-cfg {
 		description
 		 "This group defines hello interface
 		  parameters for ISIS.";
@@ -1064,13 +1091,13 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-interface-level-cfg {
+	grouping interface-level-cfg {
 		description
 		 "This group defines level specific 
 		  configuration for ISIS interfaces.";
-		uses isis-interface-hello-cfg;
+		uses interface-hello-cfg;
 		
-		uses isis-address-family-cfg;
+		uses address-family-cfg;
 		
 		leaf priority {
 			type uint8 {
@@ -1082,31 +1109,31 @@ module ietf-isis {
 			 for DIS election.";
 		}
 		leaf clns-metric {
-			type isis-std-metric;
+			type std-metric;
 			description
 			 "This leaf describes the CLNS metric
 			 of the interface.";
 		}
 		leaf ipv4-unicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description
 			 "This leaf describes the IPv4 unicast metric
 			 of the interface.";
 		}
 		leaf ipv6-unicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description
 			 "This leaf describes the IPv6 unicast metric
 			 of the interface.";
 		}
 		leaf ipv4-multicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description
 			 "This leaf describes the IPv4 multicast metric
 			 of the interface.";
 		}
 		leaf ipv6-multicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description
 			 "This leaf describes the IPv6 multicast metric
 			 of the interface.";
@@ -1120,7 +1147,7 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-authentication-cfg {
+	grouping authentication-cfg {
 		description
 		 "This group defines authentication
 		 configuration for ISIS.";
@@ -1164,7 +1191,7 @@ module ietf-isis {
 		}
 	}
 	
-	grouping isis-level-cfg {
+	grouping level-cfg {
 		description
 		 "This group defines level specific
 		  global configuration for ISIS.";
@@ -1176,7 +1203,7 @@ module ietf-isis {
 			  status of the level (Active / not active).";
 		}
 		
-		uses isis-authentication-cfg;
+		uses authentication-cfg;
 		
 		leaf metric-type {
 			type enumeration {
@@ -1211,22 +1238,22 @@ module ietf-isis {
 			  routes.";
 		}
 		leaf default-ipv4-unicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description 
 			 "This leaf defines the IPv4 unicast default metric.";
 		}
 		leaf default-ipv6-unicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description 
 			 "This leaf defines the IPv6 unicast default metric.";
 		}
 		leaf default-ipv4-multicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description 
 			 "This leaf defines the IPv4 multicast default metric.";
 		}
 		leaf default-ipv6-multicast-metric {
-			type isis-wide-metric;
+			type wide-metric;
 			description 
 			 "This leaf defines the IPv6 multicast default metric.";
 		}
@@ -1243,8 +1270,14 @@ module ietf-isis {
 		 "This augments a routing protocol instance with ISIS
 		  specific parameters.";
 		container isis {
-			leaf isis-level {
-				type isis-level;
+			must "count(area-address) > 0" {
+				error-message "At least one area-address must be configured.";
+				description
+				 "Enforce configuration of at least one area.";
+			}	
+
+			leaf level {
+				type level;
 				default "level-1-2";
 				description
 				 "This leaf describes the type of ISIS node.
@@ -1253,7 +1286,7 @@ module ietf-isis {
 				 ";
 			}
 			leaf system-id {
-				type isis-system-id;
+				type system-id;
 				description
 				 "This leaf defines the system-id of the node.";
 			}
@@ -1263,6 +1296,20 @@ module ietf-isis {
 				description 
 				 "List of areas supported by the 
 				 protocol instance.";
+			}
+			
+			leaf maximum-area-addresses {
+				if-feature maximum-area-addresses;
+				type uint8;
+				default 3;
+				description
+				 "Defines the maximum areas supported.";
+			}
+			
+			leaf default-metric {
+				type wide-metric;
+				description
+				 "Defines the metric to be used by default.";
 			}
 			
 			leaf ipv4-router-id {
@@ -1307,6 +1354,62 @@ module ietf-isis {
 				  router LSP in seconds.";
 			}
 			
+			leaf ispf {
+				if-feature ispf;
+				type empty;
+				description
+				 "Activates incremental SPF.";
+			}
+	
+			container spf-exp-delay {
+				if-feature spf-exp-delay;
+				leaf initial {
+					type uint16;
+					units "milliseconds";
+					description
+					 "Initial timer.";
+				}
+				leaf incremental {
+					type uint16;
+					units "milliseconds";
+					description
+					 "Incremental timer.";
+				}
+				leaf maximum {
+					type uint8;
+					units "seconds";
+					description
+					 "Maximum timer.";
+				}
+				description
+				 "Configuration of exponential backoff delay
+				  for SPF.";
+			}
+	
+			container spf-2step-delay {
+				if-feature spf-2step-delay;
+				leaf fast-timer {
+					type uint16;
+					units "milliseconds";
+					description
+					 "Rapid run delay timer.";
+				}
+				leaf rapid-runs {
+					type uint16;
+					description
+					 "Number of authorized rapid-runs.";
+				}
+				leaf maximum {
+					type uint8;
+					units "seconds";
+					description
+					 "Maximum timer.";
+				}
+				description
+				 "Configuration of two step delay
+				  for SPF.";
+			}
+	
 			container graceful-restart {
 				if-feature graceful-restart;
 				leaf restart-duration {
@@ -1325,24 +1428,24 @@ module ietf-isis {
 				 "This container activates graceful restart.";
 			}
 			
-			uses isis-authentication-cfg;
+			uses authentication-cfg;
 			
-			container isis-multi-topology-cfg {
-				uses isis-address-family-cfg;
+			container multi-topology-cfg {
+				uses address-family-cfg;
 				description 
 				 "This container describes activation of MT extensions 
 				  for supporting new address families.";
 			}
 			
-			list level {
+			list level-list {
 				key level;
 				
 				leaf level {
-					type isis-level-number;
+					type level-number;
 					description
 					 "This leaf defines the current level number.";
 				}
-				uses isis-level-cfg;
+				uses level-cfg;
 				description 
 				 "Defines level specific configuration.";
 			}
@@ -1394,18 +1497,25 @@ module ietf-isis {
 						  the routing-instance.";
 					}
 					leaf level-type {
-						type isis-level;
+						type level;
 						default "level-1-2";
 						description 
 						 "This leaf defines the associated ISIS level 
 						  of the interface.";
 					}
-					leaf lsp-interval {
+					leaf lsp-pacing-interval {
 						type uint16;
 						units "milliseconds";
 						description 
 						 "This leaf defines the interval between LSP 
 						  transmissions in msec";
+					}
+					leaf lsp-retransmit-interval {
+						type uint16;
+						units "seconds";
+						description 
+						 "This leaf defines the interval between retransmission
+						 of LSP";
 					}
 					leaf passive {
 						type boolean;
@@ -1430,7 +1540,7 @@ module ietf-isis {
 						 3way handshake.";
 					}
 					
-					uses isis-interface-hello-cfg;
+					uses interface-hello-cfg;
 					
 					leaf hello-padding {
 						type boolean;
@@ -1439,7 +1549,7 @@ module ietf-isis {
 						  padded up to MTU size.";
 					}
 					
-					uses isis-address-family-cfg;
+					uses address-family-cfg;
 					
 					leaf mesh-group-enabled {
 						type mesh-group-state;
@@ -1493,15 +1603,15 @@ module ietf-isis {
 						 associated with the interface.";
 					}
 					
-					list level {
+					list level-list {
 						key level;
 						
 						leaf level {
-							type isis-level-number;
+							type level-number;
 							description
 							 "This leaf defines the current level number.";
 						}
-						uses isis-interface-level-cfg;
+						uses interface-level-cfg;
 						description 
 						 "Defines level specific configuration.";
 					}
@@ -1538,7 +1648,7 @@ module ietf-isis {
 					key level;
 					
 					leaf level {
-						type isis-level-number;
+						type level-number;
 						description
 						 "This leaf describes the ISIS level.";
 					}
@@ -1704,7 +1814,7 @@ module ietf-isis {
 					key level;
 					
 					leaf level {
-						type isis-level-number;
+						type level-number;
 						description
 						 "This leaf describes the ISIS level.";
 					}
@@ -1847,7 +1957,7 @@ module ietf-isis {
 						"Type of interface to be used.";
 					}
 					leaf level {
-						type isis-level;
+						type level;
 						description
 						"Level associated with the interface.";
 					}
@@ -1884,14 +1994,14 @@ module ietf-isis {
 						 of the interface.";
 					}
 					leaf level {
-						type isis-level;
+						type level;
 						description 
 							"This leaf describes the associated 
 							ISIS level of the interface.
 							";
 					}
 					leaf neighbor-sysid {
-						type isis-system-id;
+						type system-id;
 						description
 						 "The system-id of the neighbor";
 						 
@@ -1907,7 +2017,7 @@ module ietf-isis {
 						 "SNPA of the neighbor";
 					}
 					leaf neighbor-level {
-						type isis-level;
+						type level;
 						description
 						"The type of the neighboring system.";
 					}
@@ -2000,7 +2110,7 @@ module ietf-isis {
 						 used.";
 					}
 					leaf level {
-						type isis-level-number;
+						type level-number;
 						description
 						 "This leaf describes the level affected bytes
 						 the computation.";
@@ -2033,7 +2143,7 @@ module ietf-isis {
 					list trigger-lsp {
 						key "lsp";
 						leaf lsp {
-							type isis-lsp-id;
+							type lsp-id;
 							description
 							 "This leaf describes the LSPID 
 							  of the LSP.";
@@ -2066,7 +2176,7 @@ module ietf-isis {
 						  This is a purely internal value.";
 					}
 					leaf level {
-						type isis-level-number;
+						type level-number;
 						description
 						 "This leaf describes the level affected bytes
 						 the computation.";
@@ -2074,7 +2184,7 @@ module ietf-isis {
 					container lsp {
 						leaf lsp {
 							
-							type isis-lsp-id;
+							type lsp-id;
 							description
 							 "This leaf describes the LSPID 
 							  of the LSP.";
@@ -2115,14 +2225,14 @@ module ietf-isis {
 					key level;
 					
 					leaf level {
-						type isis-level-number;
+						type level-number;
 						description
 						 "Current level number";
 					}
 					list lsp {
 						key lsp-id;
 						
-						uses isis-database;
+						uses database;
 						description
 						 "List of LSPs in LSDB.";
 					}
@@ -2141,7 +2251,7 @@ module ietf-isis {
 				list hostname {
 					key system-id;
 					leaf system-id {
-						type isis-system-id;
+						type system-id;
 						description
 						 "This leaf describes the system-id
 						 associated with the hostname.";
@@ -2170,7 +2280,7 @@ module ietf-isis {
 	
 	/* RPC methods */
 	
-	rpc clear-isis-adjacency {
+	rpc clear-adjacency {
 		description
 		 "This RPC request clears a particular
 		  set of ISIS adjacencies. If the operation
@@ -2193,7 +2303,7 @@ module ietf-isis {
 
 			}
 			leaf routing-protocol-instance-name {
-				type isis-instance-state-ref;
+				type instance-state-ref;
 				mandatory "true";
 				description 
 				 "Name of the ISIS protocol instance whose ISIS 
@@ -2205,8 +2315,8 @@ module ietf-isis {
 				  and error-app-tag 
 				  'routing-protocol-instance-not-found'.";
 			}
-			leaf isis-level {
-				type isis-level;
+			leaf level {
+				type level;
 				description
 				 "ISIS level of the adjacency to be cleared.
 				 If ISIS level is level-1-2, both level 1 and level 2
@@ -2233,7 +2343,7 @@ module ietf-isis {
 		}
 	}
 	
-	rpc clear-isis-database {
+	rpc clear-database {
 		description
 		 "This RPC request clears a particular
 		  ISIS database. If the operation
@@ -2256,7 +2366,7 @@ module ietf-isis {
 
 			}
 			leaf routing-protocol-instance-name {
-				type isis-instance-state-ref;
+				type instance-state-ref;
 				mandatory "true";
 				description 
 				 "Name of the ISIS protocol instance whose ISIS 
@@ -2268,8 +2378,8 @@ module ietf-isis {
 				  and error-app-tag 
 				  'routing-protocol-instance-not-found'.";
 			}
-			leaf isis-level {
-				type isis-level;
+			leaf level {
+				type level;
 				description
 				 "ISIS level of the adjacency to be cleared.
 				 If ISIS level is level-1-2, both level 1 and level 2
@@ -2290,7 +2400,7 @@ module ietf-isis {
 	
 	/* Notifications */
 	
-	notification isis-database-overload {
+	notification database-overload {
 		uses notification-instance-hdr;
 		
 		leaf overload {
@@ -2313,7 +2423,7 @@ module ietf-isis {
 		   overload condition changes.";
 	}
 	
-	notification isis-lsp-too-large {
+	notification lsp-too-large {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		
@@ -2323,7 +2433,7 @@ module ietf-isis {
 			 "Size of the PDU";
 		}
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
@@ -2336,10 +2446,10 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-corrupted-lsp-detected {
+	notification corrupted-lsp-detected {
 		uses notification-instance-hdr;
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
@@ -2350,10 +2460,10 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-attempt-to-exceed-max-sequence {
+	notification attempt-to-exceed-max-sequence {
 		uses notification-instance-hdr;
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
@@ -2363,7 +2473,7 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-id-len-mismatch {
+	notification id-len-mismatch {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		
@@ -2385,7 +2495,7 @@ module ietf-isis {
 		   ";
 	}
 
-	notification isis-max-area-addresses-mismatch {
+	notification max-area-addresses-mismatch {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		
@@ -2407,11 +2517,11 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-own-lsp-purge {
+	notification own-lsp-purge {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
@@ -2421,11 +2531,11 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-sequence-number-skipped {
+	notification sequence-number-skipped {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
@@ -2437,7 +2547,7 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-authentication-type-failure {
+	notification authentication-type-failure {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf raw-pdu {
@@ -2454,7 +2564,7 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-authentication-failure {
+	notification authentication-failure {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf raw-pdu {
@@ -2471,7 +2581,7 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-version-skew {
+	notification version-skew {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf protocol-version {
@@ -2493,7 +2603,7 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-area-mismatch {
+	notification area-mismatch {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf raw-pdu {
@@ -2510,7 +2620,7 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-rejected-adjacency {
+	notification rejected-adjacency {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf raw-pdu {
@@ -2535,7 +2645,7 @@ module ietf-isis {
 	}
 	
 	
-	notification isis-protocols-supported-mismatch {
+	notification protocols-supported-mismatch {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf raw-pdu {
@@ -2558,11 +2668,11 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-lsp-error-detected {
+	notification lsp-error-detected {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
@@ -2594,7 +2704,7 @@ module ietf-isis {
 		   ";
 	}
 	
-	notification isis-adjacency-change {
+	notification adjacency-change {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		leaf neighbor {
@@ -2605,12 +2715,12 @@ module ietf-isis {
 			 field would be empty.";
 		}
 		leaf neighbor-system-id {
-			type isis-system-id;
+			type system-id;
 			description
 			 "Describes the system-id of the neighbor.";
 		}
-		leaf isis-level {
-			type isis-level;
+		leaf level {
+			type level;
 			description
 			 "Describes the ISIS level of the adjacency.";
 		}
@@ -2645,12 +2755,12 @@ module ietf-isis {
 		   moves to Up state or to Down state.";
 	}
 	
-	notification isis-lsp-received {
+	notification lsp-received {
 		uses notification-instance-hdr;
 		uses notification-interface-hdr;
 		
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
@@ -2667,7 +2777,7 @@ module ietf-isis {
 			 when the LSP was received. ";
 		}
 		leaf neighbor-system-id {
-			type isis-system-id;
+			type system-id;
 			description
 			 "Describes the system-id of the neighbor
 			 that sent the LSP.";
@@ -2679,11 +2789,11 @@ module ietf-isis {
 		   a 5 second gap. ";
 	}
 	
-	notification isis-lsp-generation {
+	notification lsp-generation {
 		uses notification-instance-hdr;
 		
 		leaf lsp-id {
-			type isis-lsp-id;
+			type lsp-id;
 			description
 			 "LSP ID.";
 		}
