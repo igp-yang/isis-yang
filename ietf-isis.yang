@@ -1981,12 +1981,6 @@ module ietf-isis {
 			}
 			container adjacencies {			
 				list adjacency {
-					key id;
-					leaf id {
-						type uint32;
-						description
-						 "Internal index of the adjacency.";
-					}
 					leaf interface {
 						type string;
 						description
@@ -2221,7 +2215,7 @@ module ietf-isis {
 				 list.";
 			}
 			container database {
-				list level {
+				list level-db {
 					key level;
 					
 					leaf level {
