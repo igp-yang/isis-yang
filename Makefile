@@ -8,7 +8,7 @@ EXAMPLE_BASE = example
 EXAMPLE_TYPE = get-reply
 baty = $(EXAMPLE_BASE)-$(EXAMPLE_TYPE)
 EXAMPLE_INST = $(baty).xml
-PYANG_OPTS =
+PYANG_OPTS = -p modules_dep
 
 artworks = $(addsuffix .aw, $(yams)) $(EXAMPLE_INST).aw \
 	   $(addsuffix .aw, $(FIGURES))
