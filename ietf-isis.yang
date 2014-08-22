@@ -50,6 +50,7 @@ module ietf-isis {
 		* Add maximum-area-addresses
 		* Add default-metric
 		";
+		reference "RFC XXXX: YANG Data Model for ISIS Protocol";
 	}
 	revision 2014-06-25 {
 		description "
