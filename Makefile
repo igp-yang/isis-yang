@@ -97,4 +97,4 @@ ietf-isis.tree: $(yams)
 
 clean:
 	@rm -rf *.rng *.rnc *.sch *.dsrl hello.xml model.tree \
-	        $(idrev).* $(artworks) figures.ent yang.ent
+	  ietf-isis.tree $(idrev).* $(artworks) figures.ent yang.ent
