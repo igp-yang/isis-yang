@@ -14,3 +14,8 @@
   shown.</t>
 </list></t>
 '>
+<!ENTITY rfc-ed-hint '
+<t>RFC Ed.: In this section, replace all occurrences of &apos;XXXX&apos;
+with the actual RFC number and all occurrences of the revision date
+below with the date of RFC publication (and remove this note).</t>
+'>

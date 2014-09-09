@@ -67,7 +67,7 @@ endif
 %.yang.aw: %.yang
 	@pyang $(PYANG_OPTS) --ietf $<
 	@echo '<artwork>' > $@
-	@echo '<![CDATA[<CODE BEGINS> file '"\"$*@YYYY-MM-DD.yang\"" >> $@
+	@echo '<![CDATA[<CODE BEGINS> file '"\"$*@$(DATE).yang\"" >> $@
 	@echo >> $@
 	@cat $< >> $@
 	@echo >> $@
