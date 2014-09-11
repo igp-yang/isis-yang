@@ -28,6 +28,15 @@ module ietf-isis {
 		"The YANG module defines a generic configuration model for 
 		ISIS common across all of the vendor implementations.";
 	
+	revision 2014-09-11 {
+		description
+			"
+			* Add level parameter to ispf and spf delay
+			* Add LSP generation as a feature
+			* Make lsp-refresh a feature
+			";
+		reference "";
+	}
 	revision 2014-09-05 {
 		description 
 		" Rewrite of the global hierarchy.";
@@ -122,7 +131,8 @@ module ietf-isis {
 	}
 	
 	feature multi-topology {
-		"Multitopology routing support.";
+		description
+		 "Multitopology routing support.";
 	}
 	feature nlpid-control {
 		description
@@ -149,6 +159,16 @@ module ietf-isis {
 		description
 			"SPF computation delay using 2step delay
 			 algorithm.";
+	}
+	
+	feature lsp-gen-interval-exp-delay {
+		description
+			"LSP generation delay using exp backoff.";
+	}
+	
+	feature lsp-refresh {
+		description
+			"Configuration of LSP refresh interval.";
 	}
 	
 	feature maximum-area-addresses {
@@ -1078,13 +1098,7 @@ module ietf-isis {
 					description
 					 "This leaf defines the system-id of the node.";
 				}
-				leaf-list area-address {
-					type area-address;
-					max-elements 3;
-					description 
-					 "List of areas supported by the 
-					 protocol instance.";
-				}
+				
 				
 				leaf maximum-area-addresses {
 					if-feature maximum-area-addresses;
@@ -1094,7 +1108,13 @@ module ietf-isis {
 					 "Defines the maximum areas supported.";
 				}
 				
-				
+				leaf-list area-address {
+					type area-address;
+					max-elements 3;
+					description 
+					 "List of areas supported by the 
+					 protocol instance.";
+				}
 				
 				
 				leaf ipv4-router-id {
@@ -1105,7 +1125,7 @@ module ietf-isis {
 				leaf ipv6-router-id {
 					type inet:ipv6-address;
 					description 
-					 "Router ID value that would be used in TLV234.";
+					 "Router ID value that would be used in TLV140.";
 				}
 				leaf reference-bandwidth {
 					if-feature reference-bandwidth;
@@ -1132,16 +1152,49 @@ module ietf-isis {
 					  LSP in seconds.";
 				}
 				leaf lsp-refresh {
+					if-feature lsp-refresh;
 					type uint16;
 					units "seconds";
 					description 
 					 "This leaf describes the refresh interval of the 
 					  router LSP in seconds.";
 				}
-				
-				leaf ispf {
+				container lsp-gen-interval-exp-delay {
+					if-feature lsp-gen-interval-exp-delay;
+					leaf initial {
+						type uint16;
+						units "milliseconds";
+						description
+						 "Initial timer.";
+					}
+					leaf incremental {
+						type uint16;
+						units "milliseconds";
+						description
+						 "Incremental timer.";
+					}
+					leaf maximum {
+						type uint8;
+						units "seconds";
+						description
+						 "Maximum timer.";
+					}
+					leaf level {
+						type level;
+						description
+							"Level applicability.";
+					}
+					description
+					 "Configuration of exponential backoff delay
+					  for LSP generation.";
+				}
+				container ispf {
 					if-feature ispf;
-					type empty;
+					leaf level {
+						type level;
+						description
+							"Level applicability.";
+					}
 					description
 					 "Activates incremental SPF.";
 				}
@@ -1165,6 +1218,11 @@ module ietf-isis {
 						units "seconds";
 						description
 						 "Maximum timer.";
+					}
+					leaf level {
+						type level;
+						description
+							"Level applicability.";
 					}
 					description
 					 "Configuration of exponential backoff delay
@@ -1190,6 +1248,11 @@ module ietf-isis {
 						description
 						 "Maximum timer.";
 					}
+					leaf level {
+						type level;
+						description
+							"Level applicability.";
+					}
 					description
 					 "Configuration of two step delay
 					  for SPF.";
@@ -1208,6 +1271,11 @@ module ietf-isis {
 						description
 						 "If the leaf exists, helper capacity
 						 is disabled.";
+					}
+					leaf enabled {
+						type boolean;
+						description
+						 "Control enabling the feature.";
 					}
 					description
 					 "This container activates graceful restart.";
