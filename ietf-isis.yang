@@ -1085,7 +1085,7 @@ module ietf-isis {
 				
 				leaf level {
 					type level;
-					default "level-all;
+					default "level-all";
 					description
 					 "This leaf describes the type of ISIS node.
 					 A node can be level-1-only, level-2-only 
