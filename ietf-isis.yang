@@ -1702,8 +1702,9 @@ module ietf-isis {
 								  received before declaring the adjacency down.";
 						}
 						
-						when 'interface-type = "broadcast"';
+						
 						container priority {
+							must 'interface-type = "broadcast"';
 							leaf value {
 								type uint8 {
 									range "0 .. 127";
