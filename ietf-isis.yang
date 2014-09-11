@@ -1085,7 +1085,7 @@ module ietf-isis {
 				
 				leaf level {
 					type level;
-					default "level-1-2";
+					default "level-all;
 					description
 					 "This leaf describes the type of ISIS node.
 					 A node can be level-1-only, level-2-only 
@@ -1432,6 +1432,12 @@ module ietf-isis {
 				list af {
 					description 
 						"List of address families supported";
+					key af;
+					leaf af {
+						type string;
+						description
+						 "Address-family";
+					}
 					if-feature nlpid-control;
 					leaf enabled {
 						type boolean;
@@ -1454,10 +1460,10 @@ module ietf-isis {
 					}
 				}
 				
-				if-feature multi-topology;
+				
 				list topologies {
-					description
-						"List of topologies";
+					if-feature multi-topology;
+					
 					key "name";
 					leaf enabled {
 						type boolean;
@@ -1468,6 +1474,8 @@ module ietf-isis {
 						type rt:rib-ref;
 						description "RIB";					
 					}
+					description
+						"List of topologies";
 				}
 				
 				
