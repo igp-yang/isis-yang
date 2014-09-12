@@ -126,6 +126,15 @@ module ietf-isis {
 		  adjacency reset action.";
 	}
 	
+	
+	feature prefix-tag {
+		description
+			"Add 32bit tag to prefixes";
+	}
+	feature prefix-tag64 {
+		description
+			"Add 64bit tag to prefixes";
+	}	
 	feature reference-bandwidth {
 		description
 			"Use a reference bandwidth to compute metric.";
