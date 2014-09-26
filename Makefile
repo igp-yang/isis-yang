@@ -93,7 +93,7 @@ model.tree: hello.xml
 	pyang $(PYANG_OPTS) -f tree -o $@ -L $<
 
 ietf-isis.tree: $(yams)
-	pyang $(PYANG_OPTS) -f tree -o $@ --tree-depth 4 $<
+	pyang $(PYANG_OPTS) -f tree -o $@ --tree-depth 6 $<
 
 clean:
 	@rm -rf *.rng *.rnc *.sch *.dsrl hello.xml model.tree \

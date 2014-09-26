@@ -28,6 +28,14 @@ module ietf-isis {
 		"The YANG module defines a generic configuration model for 
 		ISIS common across all of the vendor implementations.";
 	
+	revision 2014-09-26 {
+		description
+			"
+			* Add BFD support
+			* remove max-elements to max-area-addresses
+			";
+		reference "";
+	}
 	revision 2014-09-11 {
 		description
 			"
@@ -1120,7 +1128,6 @@ module ietf-isis {
 				
 				leaf-list area-address {
 					type area-address;
-					max-elements 3;
 					description 
 					 "List of areas supported by the 
 					 protocol instance.";
@@ -1494,6 +1501,7 @@ module ietf-isis {
 						description
 							"Describes the activation state of the AF.";
 					}
+
 					list default-metric {
 						key level;
 						
@@ -1798,6 +1806,11 @@ module ietf-isis {
 								type string;
 								description 
 									"Address-family"; 
+							}
+							leaf bfd-enabled {
+								type empty;
+								description
+									"If the leaf is present, BFD is enabled.";
 							}
 							list metric {
 								key level;
