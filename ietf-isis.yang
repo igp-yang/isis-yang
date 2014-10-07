@@ -37,8 +37,8 @@ module ietf-isis {
 			* Interface configuration uses a string rather 
 			than a reference. This permits to map to some
 			vendor specific configuration.
-			"
-			
+			";
+		reference "";	
 	}
 	revision 2014-09-26 {
 		description

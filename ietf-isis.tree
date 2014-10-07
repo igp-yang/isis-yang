@@ -1,0 +1,402 @@
+module: ietf-isis
+augment /rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route:
+   +--ro metric?       uint32
+   +--ro tag*          uint64
+   +--ro route-type?   enumeration
+augment /rt:active-route/rt:output/rt:route:
+   +--ro metric?       uint32
+   +--ro tag*          uint64
+   +--ro route-type?   enumeration
+augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol:
+   +--rw isis
+      +--rw instance* [routing-instance]
+         +--rw routing-instance              rt:routing-instance-ref
+         +--rw level?                        level
+         +--rw system-id?                    system-id
+         +--rw maximum-area-addresses?       uint8 {maximum-area-addresses}?
+         +--rw area-address*                 area-address
+         +--rw ipv4-router-id?               inet:ipv4-address
+         +--rw ipv6-router-id?               inet:ipv6-address
+         +--rw reference-bandwidth?          uint32 {reference-bandwidth}?
+         +--rw lsp-mtu?                      uint16
+         +--rw lsp-lifetime?                 uint16
+         +--rw lsp-refresh?                  uint16 {lsp-refresh}?
+         +--rw lsp-gen-interval-exp-delay* [level] {lsp-gen-interval-exp-delay}?
+         |  +--rw initial?       uint16
+         |  +--rw incremental?   uint16
+         |  +--rw maximum?       uint8
+         |  +--rw level          level
+         +--rw graceful-restart {graceful-restart}?
+         |  +--rw restart-duration?   uint16
+         |  +--rw helper-disable?     empty
+         |  +--rw enabled?            boolean
+         +--rw psnp-authentication* [level]
+         |  +--rw value?   boolean
+         |  +--rw level    level
+         +--rw csnp-authentication* [level]
+         |  +--rw value?   boolean
+         |  +--rw level    level
+         +--rw authentication-key* [level]
+         |  +--rw value?   string
+         |  +--rw level    level
+         +--rw authentication-type* [level]
+         |  +--rw value?   authentication-type
+         |  +--rw level    level
+         +--rw metric-type* [level]
+         |  +--rw value?   enumeration
+         |  +--rw level    level
+         +--rw preference* [level]
+         |  +--rw value?   uint8
+         |  +--rw level    level
+         +--rw external-preference* [level]
+         |  +--rw value?   uint8
+         |  +--rw level    level
+         +--rw default-metric* [level]
+         |  +--rw value?   wide-metric
+         |  +--rw level    level
+         +--rw af* [af] {nlpid-control}?
+         |  +--rw af                string
+         |  +--rw enabled?          boolean
+         |  +--rw default-metric* [level]
+         |     +--rw value?   wide-metric
+         |     +--rw level    level
+         +--rw topologies* [name] {multi-topology}?
+         |  +--rw enabled?   boolean
+         |  +--rw name       rt:rib-ref
+         +--rw overload* [level]
+         |  +--rw status?    boolean
+         |  +--rw type?      enumeration
+         |  +--rw timeout?   uint16
+         |  +--rw level      level
+         +--rw interfaces
+            +--rw interface* [name]
+               +--rw name                       string
+               +--rw level-type?                level
+               +--rw lsp-pacing-interval?       uint16
+               +--rw lsp-retransmit-interval?   uint16
+               +--rw passive?                   boolean
+               +--rw csnp-interval?             uint16
+               +--rw three-way-handshake?       boolean
+               +--rw hello-padding?             boolean
+               +--rw mesh-group-enabled?        mesh-group-state
+               +--rw mesh-group?                uint8
+               +--rw interface-type?            interface-type
+               +--rw enabled?                   boolean
+               +--rw tag*                       uint32 {prefix-tag}?
+               +--rw tag64*                     uint64 {prefix-tag64}?
+               +--rw hello-authentication* [level]
+               |  +--rw type?    authentication-type
+               |  +--rw key?     string
+               |  +--rw level    level
+               +--rw hello-interval* [level]
+               |  +--rw value?   uint16
+               |  +--rw level    level
+               +--rw hello-multiplier* [level]
+               |  +--rw value?   uint16
+               |  +--rw level    level
+               +--rw priority* [level]
+               |  +--rw value?   uint8
+               |  +--rw level    level
+               +--rw af* [af]
+               |  +--rw af             string
+               |  +--rw bfd-enabled?   empty
+               |  +--rw metric* [level]
+               |        ...
+               +--rw topologies* [name]
+                  +--rw name      rt:rib-ref
+                  +--rw metric* [level]
+                        ...
+augment /rt:routing-state/rt:routing-instance/rt:routing-protocols/rt:routing-protocol:
+   +--ro isis
+      +--ro system-counters
+      |  +--ro level* [level]
+      |     +--ro level                            level-number
+      |     +--ro corrupted-lsps?                  uint32
+      |     +--ro authentication-type-fails?       uint32
+      |     +--ro authentication-fails?            uint32
+      |     +--ro database-overload?               uint32
+      |     +--ro own-lsp-purge?                   uint32
+      |     +--ro manual-address-drop-from-area?   uint32
+      |     +--ro max-sequence?                    uint32
+      |     +--ro sequence-number-skipped?         uint32
+      |     +--ro id-len-mismatch?                 uint32
+      |     +--ro partition-changes?               uint32
+      |     +--ro lsp-errors?                      uint32
+      |     +--ro spf-runs?                        uint32
+      +--ro interface-counters
+      |  +--ro interface* [interface]
+      |     +--ro interface                      string
+      |     +--ro adjacency-changes?             uint32
+      |     +--ro adjacency-number?              uint32
+      |     +--ro init-fails?                    uint32
+      |     +--ro adjacency-rejects?             uint32
+      |     +--ro id-len-mismatch?               uint32
+      |     +--ro max-area-addresses-mismatch?   uint32
+      |     +--ro authentication-type-fails?     uint32
+      |     +--ro authentication-fails?          uint32
+      |     +--ro lan-dis-changes?               uint32
+      +--ro packet-counters
+      |  +--ro level* [level]
+      |     +--ro level      level-number
+      |     +--ro iih
+      |     |  +--ro in?    uint32
+      |     |  +--ro out?   uint32
+      |     +--ro ish
+      |     |  +--ro in?    uint32
+      |     |  +--ro out?   uint32
+      |     +--ro esh
+      |     |  +--ro in?    uint32
+      |     |  +--ro out?   uint32
+      |     +--ro lsp
+      |     |  +--ro in?    uint32
+      |     |  +--ro out?   uint32
+      |     +--ro psnp
+      |     |  +--ro in?    uint32
+      |     |  +--ro out?   uint32
+      |     +--ro csnp
+      |     |  +--ro in?    uint32
+      |     |  +--ro out?   uint32
+      |     +--ro unknown
+      |        +--ro in?    uint32
+      |        +--ro out?   uint32
+      +--ro interfaces
+      |  +--ro interfaces* [interface]
+      |     +--ro interface              string
+      |     +--ro circuit-id?            circuit-id
+      |     +--ro admin-state?           admin-state
+      |     +--ro oper-state?            oper-state
+      |     +--ro interface-type?        interface-type
+      |     +--ro level?                 level
+      |     +--ro passive?               empty
+      |     +--ro three-way-handshake?   empty
+      +--ro adjacencies
+      |  +--ro adjacency*
+      |     +--ro interface?                      string
+      |     +--ro level?                          level
+      |     +--ro neighbor-sysid?                 system-id
+      |     +--ro neighbor-extended-circuit-id?   extended-circuit-id
+      |     +--ro neighbor-snpa?                  snpa
+      |     +--ro neighbor-level?                 level
+      |     +--ro hold-timer?                     uint16
+      |     +--ro neighbor-priority?              uint8
+      |     +--ro lastuptime?                     yang:timestamp
+      |     +--ro state?                          enumeration
+      +--ro spf-log
+      |  +--ro event* [id]
+      |     +--ro id                    uint32
+      |     +--ro spf-type?             enumeration
+      |     +--ro level?                level-number
+      |     +--ro spf-delay?            uint32
+      |     +--ro schedule-timestamp?   yang:timestamp
+      |     +--ro start-timestamp?      yang:timestamp
+      |     +--ro end-timestamp?        yang:timestamp
+      |     +--ro trigger-lsp* [lsp]
+      |        +--ro lsp         lsp-id
+      |        +--ro sequence?   uint32
+      +--ro lsp-log
+      |  +--ro event* [id]
+      |     +--ro id                    uint32
+      |     +--ro level?                level-number
+      |     +--ro lsp
+      |     |  +--ro lsp?        lsp-id
+      |     |  +--ro sequence?   uint32
+      |     +--ro received-timestamp?   yang:timestamp
+      +--ro database
+      |  +--ro level-db* [level]
+      |     +--ro level    level-number
+      |     +--ro lsp* [lsp-id]
+      |        +--ro lsp-id                           lsp-id
+      |        +--ro checksum?                        uint16
+      |        +--ro remaining-lifetime?              uint16
+      |        +--ro sequence?                        uint32
+      |        +--ro attributes?                      bits
+      |        +--ro is-neighbor
+      |        |  +--ro neighbor* [neighbor-id]
+      |        |        ...
+      |        +--ro authentication
+      |        |  +--ro authentication-type?   authentication-type
+      |        |  +--ro authentication-key?    string
+      |        +--ro extended-is-neighbor
+      |        |  +--ro neighbor* [neighbor-id]
+      |        |        ...
+      |        +--ro ipv4-internal-reachability
+      |        |  +--ro prefixes* [ip-prefix]
+      |        |        ...
+      |        +--ro protocol-supported*              uint8
+      |        +--ro ipv4-external-reachability
+      |        |  +--ro prefixes* [ip-prefix]
+      |        |        ...
+      |        +--ro ipv4-addresses*                  inet:ipv4-address
+      |        +--ro ipv4-te-routerid?                inet:ipv4-address
+      |        +--ro extended-ipv4-reachability
+      |        |  +--ro prefixes* [ip-prefix]
+      |        |        ...
+      |        +--ro dynamic-hostname?                string
+      |        +--ro ipv6-te-routerid?                inet:ipv6-address
+      |        +--ro mt-is-neighbor
+      |        |  +--ro neighbor* [neighbor-id]
+      |        |        ...
+      |        +--ro mt-entries
+      |        |  +--ro topology* [MT-ID]
+      |        |        ...
+      |        +--ro ipv6-addresses*                  inet:ipv6-address
+      |        +--ro mt-extended-ipv4-reachability
+      |        |  +--ro prefixes* [ip-prefix]
+      |        |        ...
+      |        +--ro mt-ipv6-reachability
+      |        |  +--ro prefixes* [ip-prefix]
+      |        |        ...
+      |        +--ro ipv6-reachability
+      |        |  +--ro prefixes* [ip-prefix]
+      |        |        ...
+      |        +--ro router-capabilities
+      |           +--ro binary?   binary
+      +--ro hostnames
+         +--ro hostname* [system-id]
+            +--ro system-id    system-id
+            +--ro hostname?    string
+rpcs:
+   +---x clear-adjacency    
+   |  +--ro input     
+   |     +--ro routing-instance-name             rt:routing-instance-state-ref
+   |     +--ro routing-protocol-instance-name    instance-state-ref
+   |     +--ro level?                            level
+   |     +--ro interface?                        string
+   +---x clear-database     
+      +--ro input     
+         +--ro routing-instance-name             rt:routing-instance-state-ref
+         +--ro routing-protocol-instance-name    instance-state-ref
+         +--ro level?                            level
+notifications:
+   +---n database-overload                 
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro overload?         enumeration
+   +---n lsp-too-large                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-size?              uint32
+   |  +--ro lsp-id?                lsp-id
+   +---n corrupted-lsp-detected            
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n attempt-to-exceed-max-sequence    
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n id-len-mismatch                   
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-field-len?         uint8
+   |  +--ro raw-pdu?               binary
+   +---n max-area-addresses-mismatch       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro max-area-addresses?    uint8
+   |  +--ro raw-pdu?               binary
+   +---n own-lsp-purge                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n sequence-number-skipped           
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n authentication-type-failure       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n authentication-failure            
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n version-skew                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro protocol-version?      uint8
+   |  +--ro raw-pdu?               binary
+   +---n area-mismatch                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n rejected-adjacency                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro reason?                string
+   +---n protocols-supported-mismatch      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro protocols*             uint8
+   +---n lsp-error-detected                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro error-offset?          uint32
+   |  +--ro tlv-type?              uint8
+   +---n adjacency-change                  
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro neighbor?              string
+   |  +--ro neighbor-system-id?    system-id
+   |  +--ro level?                 level
+   |  +--ro state?                 enumeration
+   |  +--ro reason?                string
+   +---n lsp-received                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro sequence?              uint32
+   |  +--ro received-timestamp?    yang:timestamp
+   |  +--ro neighbor-system-id?    system-id
+   +---n lsp-generation                    
+      +--ro instance-name?    string
+      +--ro instance-level?   level
+      +--ro lsp-id?           lsp-id
+      +--ro sequence?         uint32
+      +--ro send-timestamp?   yang:timestamp
