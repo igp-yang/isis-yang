@@ -87,8 +87,8 @@ Table of Contents
    9.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .  78
    10. IANA Considerations . . . . . . . . . . . . . . . . . . . . .  78
    11. Normative References  . . . . . . . . . . . . . . . . . . . .  78
-   Appendix A.  Example: NETCONF <get> Reply . . . . . . . . . . . .  78
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  84
+   Appendix A.  Example: NETCONF <get> Reply . . . . . . . . . . . .  79
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  85
 
 1.  Introduction
 
@@ -855,7 +855,26 @@ Internet-Draft                  isis-cfg                    October 2014
         "WG List:   &lt;mailto:isis-wg@ietf.org&gt;
 
         Editor:     Stephane Litkowski
-                    &lt;mailto:stephane.litkowski@orange.com&gt;";
+                    &lt;mailto:stephane.litkowski@orange.com&gt;
+
+                Derek Yeung
+                    &lt;mailto:myeung@cisco.com&gt;
+                Acee Lindem
+                    &lt;mailto:acee@cisco.com&gt;
+                Jeffrey Zhang
+                    &lt;mailto:zzhang@juniper.net&gt;
+                Ladislav Lhotka
+                    &lt;mailto:llhotka@nic.cz&gt;
+                Yi Yang
+                    &lt;mailto:yiya@cisco.com&gt;
+                Dean Bogdanovic
+                    &lt;mailto:deanb@juniper.net&gt;
+                Kiran Agrahara Sreenivasa
+                    &lt;mailto:kkoushik@brocade.com&gt;
+                Yingzhen Qu
+                    &lt;mailto:yiqu@cisco.com&gt;
+
+        ";
 
     description
         "The YANG module defines a generic configuration model for
@@ -871,6 +890,14 @@ Internet-Draft                  isis-cfg                    October 2014
             than a reference. This permits to map to some
             vendor specific configuration.
             ";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 16]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         reference "";
     }
     revision 2014-09-26 {
@@ -890,14 +917,6 @@ Internet-Draft                  isis-cfg                    October 2014
             * Change parameter container to list
             ";
         reference "";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 16]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
     }
     revision 2014-09-05 {
         description
@@ -927,6 +946,14 @@ Internet-Draft                  isis-cfg                    October 2014
         * Add default-metric
         ";
         reference "RFC XXXX: YANG Data Model for ISIS Protocol";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 17]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
     }
     revision 2014-06-25 {
         description "
@@ -946,14 +973,6 @@ Internet-Draft                  isis-cfg                    October 2014
           TLV reference are putted in description.
         * Reference to core routing module were fixed.
         * Namespace fixed.
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 17]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         * Add simple-iso-address type.
         * area-id and system-id in ISIS container are merged to
           nsap-address.
@@ -983,6 +1002,14 @@ Internet-Draft                  isis-cfg                    October 2014
     identity isis-adjacency-change {
         description "Identity for the ISIS routing protocol
           adjacency state.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 18]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
     }
 
     identity clear-isis-database {
@@ -1002,14 +1029,6 @@ Internet-Draft                  isis-cfg                    October 2014
     }
     feature prefix-tag64 {
         description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 18]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
             "Add 64bit tag to prefixes";
     }
     feature reference-bandwidth {
@@ -1039,6 +1058,14 @@ Internet-Draft                  isis-cfg                    October 2014
 
     feature lsp-refresh {
         description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 19]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             "Configuration of LSP refresh interval.";
     }
 
@@ -1058,14 +1085,6 @@ Internet-Draft                  isis-cfg                    October 2014
     }
 
     typedef admin-state {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 19]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         type enumeration {
             enum "up" {
                 description
@@ -1095,6 +1114,14 @@ Internet-Draft                  isis-cfg                    October 2014
     }
     typedef circuit-id {
         type uint8;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 20]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         description
          "This type defines the circuit ID
          associated with an interface.";
@@ -1114,14 +1141,6 @@ Internet-Draft                  isis-cfg                    October 2014
                 Would result in DIS election.";
             }
             enum point-to-point {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 20]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                 description
                  "Point to point interface type.";
             }
@@ -1151,6 +1170,14 @@ Internet-Draft                  isis-cfg                    October 2014
 
     typedef level {
         type enumeration {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 21]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             enum "level-1" {
                 description
                  "This enum describes L1 only capability.";
@@ -1169,14 +1196,6 @@ Internet-Draft                  isis-cfg                    October 2014
          "This type defines ISIS level of an object.";
 
     }
-
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 21]
-
-Internet-Draft                  isis-cfg                    October 2014
-
 
     typedef level-number {
         type uint8 {
@@ -1207,6 +1226,14 @@ Internet-Draft                  isis-cfg                    October 2014
     }
 
     typedef snpa {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 22]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         type string {
             length "0 .. 20";
         }
@@ -1226,14 +1253,6 @@ Internet-Draft                  isis-cfg                    October 2014
     }
 
     typedef wide-metric {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 22]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         type uint32 {
             range "0 .. 16777215";
         }
@@ -1263,6 +1282,14 @@ Internet-Draft                  isis-cfg                    October 2014
             }
             enum "meshBlocked" {
                 description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 23]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                  "LSPs must not be flooded over that interface.";
             }
         }
@@ -1282,14 +1309,6 @@ Internet-Draft                  isis-cfg                    October 2014
         leaf instance-level {
             type level;
             description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 23]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
              "Describes the ISIS level of the instance.";
         }
     }
@@ -1319,6 +1338,14 @@ Internet-Draft                  isis-cfg                    October 2014
         description
          "This group add isis-specific route properties.";
         leaf metric {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 24]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             type uint32;
             description
              "This leaf describes ISIS metric of a route.";
@@ -1338,14 +1365,6 @@ Internet-Draft                  isis-cfg                    October 2014
                 }
                 enum l1-up-internal {
                     description "Level 1 internal route
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 24]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                      and not leaked to a lower level";
                 }
                 enum l2-up-external {
@@ -1375,6 +1394,14 @@ Internet-Draft                  isis-cfg                    October 2014
             }
             description
              "This leaf describes the type of ISIS route.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 25]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         }
     }
 
@@ -1393,13 +1420,6 @@ Internet-Draft                  isis-cfg                    October 2014
         uses route-content;
         description "ISIS-specific route attributes.";
       }
-
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 25]
-
-Internet-Draft                  isis-cfg                    October 2014
 
 
     grouping prefix-ipv4-std {
@@ -1430,6 +1450,14 @@ Internet-Draft                  isis-cfg                    October 2014
             type std-metric;
             description
              "This leaf describes the ISIS default metric value";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 26]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         }
         container delay-metric {
             leaf metric {
@@ -1450,14 +1478,6 @@ Internet-Draft                  isis-cfg                    October 2014
         container expense-metric {
             leaf metric {
                 type std-metric;
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 26]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                 description
                  "This leaf describes the ISIS expense metric value";
             }
@@ -1486,6 +1506,14 @@ Internet-Draft                  isis-cfg                    October 2014
             description
              "This container defines the ISIS error metric.";
         }
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 27]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
     }
 
     grouping prefix-ipv4-extended {
@@ -1506,14 +1534,6 @@ Internet-Draft                  isis-cfg                    October 2014
             type uint8;
             description
              "This leaf describes the IPv4 prefix len in bits";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 27]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         }
 
         leaf metric {
@@ -1542,6 +1562,14 @@ Internet-Draft                  isis-cfg                    October 2014
         leaf up-down {
             type boolean;
             description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 28]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
              "This leaf expresses the value of up/down bit.";
         }
         leaf ip-prefix {
@@ -1562,14 +1590,6 @@ Internet-Draft                  isis-cfg                    October 2014
         }
         leaf-list tag {
             type uint32;
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 28]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
             description
              "This leaf describes a list of tags associated with
              the prefix.";
@@ -1598,6 +1618,14 @@ Internet-Draft                  isis-cfg                    October 2014
         }
     }
 
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 29]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
     grouping neighbor {
         description
          "This group defines attributes of an
@@ -1618,14 +1646,6 @@ Internet-Draft                  isis-cfg                    October 2014
              "This leaf describes the ISIS default metric value";
         }
         container delay-metric {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 29]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
             leaf metric {
                 type std-metric;
                 description
@@ -1654,6 +1674,14 @@ Internet-Draft                  isis-cfg                    October 2014
             }
             description
              "This container defines the ISIS expense metric.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 30]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         }
         container error-metric {
             leaf metric {
@@ -1674,14 +1702,6 @@ Internet-Draft                  isis-cfg                    October 2014
 
     grouping database {
         description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 30]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
          "This group defines attributes of an
           ISIS database (Link State DB).";
         leaf lsp-id {
@@ -1710,6 +1730,14 @@ Internet-Draft                  isis-cfg                    October 2014
             type bits {
                 bit PARTITIONNED {
                     description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 31]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                      "If set, the originator supports partition
                       repair.";
                 }
@@ -1730,14 +1758,6 @@ Internet-Draft                  isis-cfg                    October 2014
                 }
                 bit ATTACHED-DEFAULT {
                     description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 31]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                      "If set, the originator is attached to
                       another area using the referred metric.";
                 }
@@ -1766,6 +1786,14 @@ Internet-Draft                  isis-cfg                    October 2014
         container authentication {
             leaf authentication-type {
                 type authentication-type;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 32]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                 description
                  "This leaf describes the authentication type
                   to be used.";
@@ -1786,14 +1814,6 @@ Internet-Draft                  isis-cfg                    October 2014
         container extended-is-neighbor {
             list neighbor {
                 key "neighbor-id";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 32]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                 uses neighbor-extended;
                 description
                  "List of neighbors.";
@@ -1822,6 +1842,14 @@ Internet-Draft                  isis-cfg                    October 2014
             description
              "This leaf describes the list of
              supported protocols.
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 33]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
              ISIS reference is TLV 129.";
         }
 
@@ -1842,14 +1870,6 @@ Internet-Draft                  isis-cfg                    October 2014
             type inet:ipv4-address;
             description
                 "This leaf describes the IPv4 addresses of the node.
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 33]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                 ISIS reference is TLV 132.";
         }
 
@@ -1879,6 +1899,13 @@ Internet-Draft                  isis-cfg                    October 2014
         leaf dynamic-hostname {
             type string;
 
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 34]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             description
              "This leaf describes the name of the node.
              ISIS reference is TLV 137.";
@@ -1898,14 +1925,6 @@ Internet-Draft                  isis-cfg                    October 2014
                 key "neighbor-id";
                 leaf MT-ID {
                     type uint16 {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 34]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         range "0 .. 4095";
                     }
                     description
@@ -1935,6 +1954,14 @@ Internet-Draft                  isis-cfg                    October 2014
                       of a topology.";
                 }
 
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 35]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                 leaf attributes {
                     type bits {
                         bit OVERLOAD {
@@ -1954,14 +1981,6 @@ Internet-Draft                  isis-cfg                    October 2014
                       for the associated topology.";
                 }
                 description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 35]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                  "List of topologies supported.";
             }
             description
@@ -1991,6 +2010,14 @@ Internet-Draft                  isis-cfg                    October 2014
                      "This leaf defines the identifier
                       of a topology.";
                 }
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 36]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                 uses prefix-ipv4-extended;
                 description
                  "List of prefixes.";
@@ -2010,14 +2037,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     type uint16 {
                         range "0 .. 4095";
                     }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 36]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                     description
                      "This leaf defines the identifier
                       of a topology.";
@@ -2047,6 +2066,14 @@ Internet-Draft                  isis-cfg                    October 2014
         }
 
         container router-capabilities {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 37]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             leaf binary {
                 type binary;
                 description
@@ -2066,14 +2093,6 @@ Internet-Draft                  isis-cfg                    October 2014
 
 
     augment "/rt:routing/rt:routing-instance/rt:routing-protocols/"
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 37]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         +"rt:routing-protocol" {
         when "rt:type = 'isis:isis'" {
             description
@@ -2103,6 +2122,14 @@ Internet-Draft                  isis-cfg                    October 2014
                         routing-instance.
                         For VRF centric model, must reference the enclosing
                         routing-instance.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 38]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                 }
 
                 leaf level {
@@ -2120,14 +2147,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     description
                      "This leaf defines the system-id of the node.";
                 }
-
-
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 38]
-
-Internet-Draft                  isis-cfg                    October 2014
 
 
                 leaf maximum-area-addresses {
@@ -2159,6 +2178,14 @@ Internet-Draft                  isis-cfg                    October 2014
                 leaf reference-bandwidth {
                     if-feature reference-bandwidth;
                     type uint32;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 39]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                     units "bps";
                     description
                      "This leaf defines the bandwidth for calculating
@@ -2178,14 +2205,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     units "seconds";
                     description
                      "This leaf describes the lifetime of the router
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 39]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                       LSP in seconds.";
                 }
                 leaf lsp-refresh {
@@ -2215,6 +2234,14 @@ Internet-Draft                  isis-cfg                    October 2014
                     leaf maximum {
                         type uint8;
                         units "seconds";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 40]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         description
                          "Maximum timer.";
                     }
@@ -2234,14 +2261,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     leaf restart-duration {
                         type uint16;
                         units seconds;
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 40]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         description
                          "Defines the restart duration in seconds.";
                     }
@@ -2271,6 +2290,14 @@ Internet-Draft                  isis-cfg                    October 2014
                          authenticated.";
                     }
                     leaf level {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 41]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         type level;
                         description
                             "Level applicability.";
@@ -2290,14 +2317,6 @@ Internet-Draft                  isis-cfg                    October 2014
                          authenticated.";
                     }
                     leaf level {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 41]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         type level;
                         description
                             "Level applicability.";
@@ -2327,6 +2346,14 @@ Internet-Draft                  isis-cfg                    October 2014
                     }
                     description
                      "Container for authentication key.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 42]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                 }
 
                 list authentication-type {
@@ -2346,13 +2373,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     description
                      "Container for authentication-type";
                 }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 42]
-
-Internet-Draft                  isis-cfg                    October 2014
-
 
                 list metric-type {
                     key level;
@@ -2382,6 +2402,14 @@ Internet-Draft                  isis-cfg                    October 2014
                         type level;
                         description
                             "Level applicability.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 43]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                     }
                     description
                      "Metric style container.";
@@ -2402,14 +2430,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     description
                          "This leaf defines the protocol preference.";
                 }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 43]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                 list external-preference {
                     key level;
 
@@ -2438,6 +2458,14 @@ Internet-Draft                  isis-cfg                    October 2014
                     }
                     leaf level {
                         type level;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 44]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         description
                             "Level applicability of the metric.";
                     }
@@ -2458,13 +2486,6 @@ Internet-Draft                  isis-cfg                    October 2014
                         description
                             "Describes the activation state of the AF.";
                     }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 44]
-
-Internet-Draft                  isis-cfg                    October 2014
-
 
                     list default-metric {
                         key level;
@@ -2493,6 +2514,14 @@ Internet-Draft                  isis-cfg                    October 2014
                     key "name";
                     leaf enabled {
                         type boolean;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 45]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         description
                             "Describes the activation state of the AF.";
                     }
@@ -2514,14 +2543,6 @@ Internet-Draft                  isis-cfg                    October 2014
                          "This leaf defines the overload status.";
                     }
                     leaf type {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 45]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         type enumeration {
                             enum "max-metric" {
                                 description
@@ -2549,6 +2570,14 @@ Internet-Draft                  isis-cfg                    October 2014
                     }
                     description
                      "This leaf describes if the router is
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 46]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                       set to overload state.";
                 }
 
@@ -2570,14 +2599,6 @@ Internet-Draft                  isis-cfg                    October 2014
                               of the interface.";
                         }
                         leaf lsp-pacing-interval {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 46]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                             type uint16;
                             units "milliseconds";
                             description
@@ -2605,6 +2626,14 @@ Internet-Draft                  isis-cfg                    October 2014
                             description
                              "This leaf defines the interval of CSNP
                               messages.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 47]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         }
 
                         leaf three-way-handshake {
@@ -2626,14 +2655,6 @@ Internet-Draft                  isis-cfg                    October 2014
                             description
                              "Describes the mesh group state of
                               the interface.";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 47]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         }
 
 
@@ -2661,6 +2682,14 @@ Internet-Draft                  isis-cfg                    October 2014
                         leaf enabled {
                             type boolean;
                             default "true";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 48]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                             description
                              "This leaf describes the administrative
                              status of the ISIS interface.";
@@ -2682,14 +2711,6 @@ Internet-Draft                  isis-cfg                    October 2014
                             type uint64;
                             description
                              "This leaf defines list of 64bits tags
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 48]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                              associated with the interface.";
                         }
 
@@ -2717,6 +2738,14 @@ Internet-Draft                  isis-cfg                    October 2014
                             leaf level {
                                 type level;
                                 description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 49]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                                     "Level applicability.";
                             }
                             description
@@ -2738,14 +2767,6 @@ Internet-Draft                  isis-cfg                    October 2014
                                 description
                                     "Level applicability.";
                             }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 49]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                             description
                                  "This leaf defines the interval of hello messages.";
                         }
@@ -2773,6 +2794,14 @@ Internet-Draft                  isis-cfg                    October 2014
                             must 'interface-type = "broadcast"';
                             key level;
                             leaf value {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 50]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                                 type uint8 {
                                     range "0 .. 127";
                                 }
@@ -2794,14 +2823,6 @@ Internet-Draft                  isis-cfg                    October 2014
                             key af;
 
                             leaf af {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 50]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                                 type string;
                                 description
                                     "Address-family";
@@ -2829,6 +2850,14 @@ Internet-Draft                  isis-cfg                    October 2014
                             }
                             description
                              "List of AFs.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 51]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         }
 
                         list topologies {
@@ -2850,14 +2879,6 @@ Internet-Draft                  isis-cfg                    October 2014
                                 leaf level {
                                     type level;
                                     description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 51]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                                         "Level applicability.";
                                 }
                                 description
@@ -2885,6 +2906,14 @@ Internet-Draft                  isis-cfg                    October 2014
 
     augment "/rt:routing-state/rt:routing-instance/"
         +"rt:routing-protocols/rt:routing-protocol" {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 52]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         when "rt:type = 'isis:isis'" {
             description
              "This augment is only valid when routing protocol
@@ -2906,14 +2935,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     }
                     leaf corrupted-lsps {
                         type uint32;
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 52]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         description
                          "Number of corrupted in-memory LSPs detected.
                          LSPs received from the wire with a bad
@@ -2941,6 +2962,14 @@ Internet-Draft                  isis-cfg                    October 2014
                         type uint32;
                         description
                          "Number of times a zero-aged copy of the
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 53]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                          system's own LSP is received from some
                          other node.";
                     }
@@ -2962,14 +2991,6 @@ Internet-Draft                  isis-cfg                    October 2014
                          "Number of times a sequence number skip has
                          occured.";
                     }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 53]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                     leaf id-len-mismatch {
                         type uint32;
                         description
@@ -2997,6 +3018,14 @@ Internet-Draft                  isis-cfg                    October 2014
                      "List of supported levels.";
                 }
                 description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 54]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                  "The container defines a list of counters
                   for the IS.";
             }
@@ -3018,14 +3047,6 @@ Internet-Draft                  isis-cfg                    October 2014
                           change has occured on this interface.";
                     }
                     leaf adjacency-number {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 54]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         type uint32;
                         description
                          "The number of adjacencies on this
@@ -3053,6 +3074,14 @@ Internet-Draft                  isis-cfg                    October 2014
                           field length different from that for this
                           system has been received on this interface.";
                     }
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 55]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                     leaf max-area-addresses-mismatch {
                         type uint32;
                         description
@@ -3074,14 +3103,6 @@ Internet-Draft                  isis-cfg                    October 2014
                         type uint32;
                         description
                          "The number of times the DIS has changed
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 55]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                           on this interface at this level.
                           If the interface type is point to point,
                           the count is zero.";
@@ -3109,6 +3130,14 @@ Internet-Draft                  isis-cfg                    October 2014
                             description
                              "Received PDUs.";
                         }
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 56]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         leaf out {
                             type uint32;
                             description
@@ -3130,14 +3159,6 @@ Internet-Draft                  isis-cfg                    October 2014
                         }
                         description
                          "The number of ISH PDUs received/sent.";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 56]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                     }
                     container esh {
                         leaf in {
@@ -3165,6 +3186,14 @@ Internet-Draft                  isis-cfg                    October 2014
                              "Sent PDUs.";
                         }
                         description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 57]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                          "The number of LSP PDUs received/sent.";
                     }
                     container psnp {
@@ -3186,14 +3215,6 @@ Internet-Draft                  isis-cfg                    October 2014
                             type uint32;
                             description
                              "Received PDUs.";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 57]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         }
                         leaf out {
                             type uint32;
@@ -3221,6 +3242,14 @@ Internet-Draft                  isis-cfg                    October 2014
                      "List of supported levels.";
                 }
                 description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 58]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                  "The container defines a list of PDU counters.";
             }
             container interfaces {
@@ -3242,14 +3271,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     leaf admin-state {
                         type admin-state;
                         description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 58]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         "This leaf describes the admin state
                         of the interface.";
                     }
@@ -3277,6 +3298,14 @@ Internet-Draft                  isis-cfg                    October 2014
                     }
                     leaf three-way-handshake {
                         type empty;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 59]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         description
                          "The interface uses 3-way handshake.";
                     }
@@ -3298,14 +3327,6 @@ Internet-Draft                  isis-cfg                    October 2014
                     leaf level {
                         type level;
                         description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 59]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                             "This leaf describes the associated
                             ISIS level of the interface.
                             ";
@@ -3333,6 +3354,14 @@ Internet-Draft                  isis-cfg                    October 2014
                     }
                     leaf hold-timer {
                         type uint16;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 60]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                         description
                          "The holding time in seconds for this
                           adjacency. This value is based on
@@ -3354,14 +3383,6 @@ Internet-Draft                  isis-cfg                    October 2014
                           state 'up', measured in hundredths of a
                           second since the last reinitialization of
                           the network management subsystem.
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 60]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                           The value is 0 if the adjacency has never
                           been in state 'up'.";
 
@@ -3389,6 +3410,14 @@ Internet-Draft                  isis-cfg                    October 2014
                          interface.";
                     }
                     description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 61]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                      "List of operational adjacencies.";
                 }
                 description
@@ -3410,14 +3439,6 @@ Internet-Draft                  isis-cfg                    October 2014
                             enum full {
                                 description
                                  "Computation done is a Full SPF.";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 61]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                             }
                             enum incremental {
                                 description
@@ -3445,6 +3466,14 @@ Internet-Draft                  isis-cfg                    October 2014
                         type uint32;
                         units "milliseconds";
                         description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 62]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                          "This leaf describes the SPF delay that
                          was used for this event.";
                     }
@@ -3466,14 +3495,6 @@ Internet-Draft                  isis-cfg                    October 2014
                          "This leaf describes the timestamp
                           when the computation was ended.";
                     }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 62]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                     list trigger-lsp {
                         key "lsp";
                         leaf lsp {
@@ -3501,6 +3522,14 @@ Internet-Draft                  isis-cfg                    October 2014
             }
             container lsp-log {
                 list event {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 63]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                     key id;
 
                     leaf id {
@@ -3522,14 +3551,6 @@ Internet-Draft                  isis-cfg                    October 2014
                             description
                              "This leaf describes the LSPID
                               of the LSP.";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 63]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                         }
                         leaf sequence {
                             type uint32;
@@ -3557,6 +3578,14 @@ Internet-Draft                  isis-cfg                    October 2014
                      "List of LSP events.";
                 }
 
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 64]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                 description
                  "This container lists the LSP reception events.
                  Local LSP modification are also contained in the
@@ -3578,13 +3607,6 @@ Internet-Draft                  isis-cfg                    October 2014
                         description
                          "List of LSPs in LSDB.";
                     }
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 64]
-
-Internet-Draft                  isis-cfg                    October 2014
-
 
                     description
                      "This container describes the list of LSPs
@@ -3612,6 +3634,14 @@ Internet-Draft                  isis-cfg                    October 2014
                          "This leaf describes the hostname
                           associated with the system ID.";
                     }
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 65]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                     description
                      "List of system-id/hostname associations";
                 }
@@ -3634,14 +3664,6 @@ Internet-Draft                  isis-cfg                    October 2014
          "This RPC request clears a particular
           set of ISIS adjacencies. If the operation
           fails for ISIS internal reason, then
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 65]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
           error-tag and error-app-tag should be set
           to a meaningful value.";
         input {
@@ -3668,6 +3690,14 @@ Internet-Draft                  isis-cfg                    October 2014
 
                   If the ISIS instance with name equal to the
                   value of this parameter doesn't exist, then this
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 66]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                   operation SHALL fail with error-tag 'data-missing'
                   and error-app-tag
                   'routing-protocol-instance-not-found'.";
@@ -3690,13 +3720,6 @@ Internet-Draft                  isis-cfg                    October 2014
                 type string;
                 description
                  "Name of the ISIS interface.
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 66]
-
-Internet-Draft                  isis-cfg                    October 2014
-
 
                   If the ISIS interface with name equal to the
                   value of this parameter doesn't exist, then this
@@ -3723,6 +3746,14 @@ Internet-Draft                  isis-cfg                    October 2014
                   information is being queried.
 
                   If the routing instance with name equal to the
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 67]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                   value of this parameter doesn't exist, then this
                   operation SHALL fail with error-tag 'data-missing'
                   and error-app-tag 'routing-instance-not-found'.";
@@ -3746,14 +3777,6 @@ Internet-Draft                  isis-cfg                    October 2014
                 type level;
                 description
                  "ISIS level of the adjacency to be cleared.
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 67]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
                  If ISIS level is level-1-2, both level 1 and level 2
                  adjacencies would be cleared.
 
@@ -3779,6 +3802,14 @@ Internet-Draft                  isis-cfg                    October 2014
             type enumeration {
                 enum "off" {
                     description
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 68]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
                      "The system has left overload condition.";
                 }
                 enum "on" {
@@ -3802,14 +3833,6 @@ Internet-Draft                  isis-cfg                    October 2014
         leaf pdu-size {
             type uint32;
             description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 68]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
              "Size of the PDU";
         }
         leaf lsp-id {
@@ -3835,6 +3858,14 @@ Internet-Draft                  isis-cfg                    October 2014
         }
         description
           "This notification is sent when we find
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 69]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
            that an LSP that was stored in memory has
            become corrupted.
            ";
@@ -3858,14 +3889,6 @@ Internet-Draft                  isis-cfg                    October 2014
         uses notification-interface-hdr;
 
         leaf pdu-field-len {
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 69]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
             type uint8;
             description
              "Size of the ID length in the received PDU";
@@ -3891,6 +3914,14 @@ Internet-Draft                  isis-cfg                    October 2014
             type uint8;
             description
              "Received number of supported areas";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 70]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         }
         leaf raw-pdu {
             type binary;
@@ -3914,14 +3945,6 @@ Internet-Draft                  isis-cfg                    October 2014
              "LSP ID.";
         }
         description
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 70]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
           "This notification is sent when the system
           receives a PDU with its own system ID and zero age.
            ";
@@ -3947,6 +3970,14 @@ Internet-Draft                  isis-cfg                    October 2014
         uses notification-instance-hdr;
         uses notification-interface-hdr;
         leaf raw-pdu {
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 71]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             type binary;
             description
              "Received raw PDU.";
@@ -3970,14 +4001,6 @@ Internet-Draft                  isis-cfg                    October 2014
         }
         description
           "This notification is sent when the system
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 71]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
           receives a PDU with the wrong authentication
           information.
           The notification generation must be throttled with at least
@@ -4003,6 +4026,14 @@ Internet-Draft                  isis-cfg                    October 2014
           receives a PDU with a different protocol version
           number.
           The notification generation must be throttled with at least
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 72]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
            a 5 second gap.
            ";
     }
@@ -4026,14 +4057,6 @@ Internet-Draft                  isis-cfg                    October 2014
 
     notification rejected-adjacency {
         uses notification-instance-hdr;
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 72]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         uses notification-interface-hdr;
         leaf raw-pdu {
             type binary;
@@ -4059,6 +4082,14 @@ Internet-Draft                  isis-cfg                    October 2014
 
     notification protocols-supported-mismatch {
         uses notification-instance-hdr;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 73]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         uses notification-interface-hdr;
         leaf raw-pdu {
             type binary;
@@ -4082,14 +4113,6 @@ Internet-Draft                  isis-cfg                    October 2014
 
     notification lsp-error-detected {
         uses notification-instance-hdr;
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 73]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         uses notification-interface-hdr;
         leaf lsp-id {
             type lsp-id;
@@ -4115,6 +4138,14 @@ Internet-Draft                  isis-cfg                    October 2014
              "if the problem is a malformed TLV, the tlv-type is set
              to the type value of the suspicious TLV.
              Otherwise this leaf is not present.";
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 74]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         }
         description
           "This notification is sent when the system
@@ -4138,14 +4169,6 @@ Internet-Draft                  isis-cfg                    October 2014
             type system-id;
             description
              "Describes the system-id of the neighbor.";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 74]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         }
         leaf level {
             type level;
@@ -4171,6 +4194,14 @@ Internet-Draft                  isis-cfg                    October 2014
         }
         leaf reason {
             type string;
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 75]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             description
              "If the adjacency is going to DOWN,
              this leaf provides a reason for the adjacency
@@ -4194,14 +4225,6 @@ Internet-Draft                  isis-cfg                    October 2014
         }
         leaf sequence {
             type uint32;
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 75]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
             description
              "Sequence number of the received LSP.";
         }
@@ -4228,6 +4251,13 @@ Internet-Draft                  isis-cfg                    October 2014
     notification lsp-generation {
         uses notification-instance-hdr;
 
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 76]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         leaf lsp-id {
             type lsp-id;
             description
@@ -4250,14 +4280,6 @@ Internet-Draft                  isis-cfg                    October 2014
           is regenerated.
           The notification generation must be throttled with at least
            a 5 second gap. ";
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 76]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
     }
 }
 
@@ -4284,6 +4306,14 @@ Internet-Draft                  isis-cfg                    October 2014
    to open some part of the configuration to less experienced users
    depending on the internal organization, for example:
 
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 77]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
    o  User FullWrite: would access to the whole data model.  This kind
       of profile may be restricted to few experienced people.
 
@@ -4305,15 +4335,6 @@ Internet-Draft                  isis-cfg                    October 2014
 
    Some authentication-key may also be present in the /isis
    configuration.  When configuring ISIS using the NETCONF protocol,
-
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 77]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
    authors recommends the usage of secure transport of NETCONF using SSH
    ([RFC6242]).
 
@@ -4341,6 +4362,14 @@ Internet-Draft                  isis-cfg                    October 2014
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119, March 1997.
 
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 78]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
    [RFC6020]  Bjorklund, M., "YANG - A Data Modeling Language for the
               Network Configuration Protocol (NETCONF)", RFC 6020,
               October 2010.
@@ -4361,14 +4390,6 @@ Appendix A.  Example: NETCONF <get> Reply
    This section gives an example of a reply to the NETCONF <get> request
    for a device that implements the data model defined in this document.
    The example is written in XML.
-
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 78]
-
-Internet-Draft                  isis-cfg                    October 2014
-
 
 <?xml version="1.0" encoding="utf-8"?>
 <rpc-reply
@@ -4397,6 +4418,14 @@ Internet-Draft                  isis-cfg                    October 2014
     <if:type>ianaift:softwareLoopback</if:type>
     <ip:ipv4>
       <ip:address>
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 79]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         <ip:ip>192.168.0.2</ip:ip>
         <ip:prefix-length>32</ip:prefix-length>
       </ip:address>
@@ -4418,14 +4447,6 @@ Internet-Draft                  isis-cfg                    October 2014
       <if:in-errors>0</if:in-errors>
       <if:in-unknown-protos>0</if:in-unknown-protos>
       <if:out-octets>541</if:out-octets>
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 79]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
       <if:out-unicast-pkts>100</if:out-unicast-pkts>
       <if:out-broadcast-pkts>0</if:out-broadcast-pkts>
       <if:out-multicast-pkts>0</if:out-multicast-pkts>
@@ -4453,6 +4474,14 @@ Internet-Draft                  isis-cfg                    October 2014
       <if:in-errors>0</if:in-errors>
       <if:in-unknown-protos>0</if:in-unknown-protos>
       <if:out-octets>541</if:out-octets>
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 80]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
       <if:out-unicast-pkts>100</if:out-unicast-pkts>
       <if:out-broadcast-pkts>0</if:out-broadcast-pkts>
       <if:out-multicast-pkts>0</if:out-multicast-pkts>
@@ -4474,14 +4503,6 @@ Internet-Draft                  isis-cfg                    October 2014
     <rt:router-id>192.0.2.1</rt:router-id>
     <rt:interfaces>
       <rt:interface>
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 80]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         <rt:name>eth0</rt:name>
       </rt:interface>
     </rt:interfaces>
@@ -4509,6 +4530,14 @@ Internet-Draft                  isis-cfg                    October 2014
           </isis:schedule-timestamp>
           <isis:start-timestamp>
             1403612399
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 81]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
           </isis:start-timestamp>
           <isis:end-timestamp>
             1403612420
@@ -4530,14 +4559,6 @@ Internet-Draft                  isis-cfg                    October 2014
           <isis:received-timestamp>
             1403612420
           </isis:received-timestamp>
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 81]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         </isis:event>
           </isis:lsp-log>
           <isis:database>
@@ -4565,6 +4586,14 @@ Internet-Draft                  isis-cfg                    October 2014
             </isis:ipv4-addresses>
             <isis:extended-ipv4-reachability>
               <isis:prefixes>
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 82]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
             <isis:ip-prefix>192.168.0.2</isis:ip-prefix>
             <isis:up-down>false</isis:up-down>
             <isis:prefix-len>32</isis:prefix-len>
@@ -4586,14 +4615,6 @@ Internet-Draft                  isis-cfg                    October 2014
           </isis:hostnames>
         </isis:isis>
       </rt:routing-protocol>
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 82]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
     </rt:routing-protocols>
       </rt:routing-instance>
       <rt:ribs>
@@ -4621,6 +4642,14 @@ Internet-Draft                  isis-cfg                    October 2014
     <rt:router-id>192.0.2.1</rt:router-id>
     <rt:interfaces>
       <rt:interface>
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 83]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
         <rt:name>eth0</rt:name>
       </rt:interface>
       <rt:interface>
@@ -4642,14 +4671,6 @@ Internet-Draft                  isis-cfg                    October 2014
         f567acafcd6578861df5683268$
           </isis:authentication-key>
           <isis:authentication-type>
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 83]
-
-Internet-Draft                  isis-cfg                    October 2014
-
-
         plaintext
           </isis:authentication-type>
           <isis:isis-multi-topology-cfg>
@@ -4677,6 +4698,14 @@ Internet-Draft                  isis-cfg                    October 2014
         </isis:interface>
         <isis:interface>
           <isis:name>lo0</isis:name>
+
+
+
+Litkowski, et al.        Expires April 10, 2015                [Page 84]
+
+Internet-Draft                  isis-cfg                    October 2014
+
+
           <isis:level-2>
             <isis:ipv4-unicast-metric>
               1
@@ -4694,17 +4723,6 @@ Internet-Draft                  isis-cfg                    October 2014
 </rpc-reply>
 
 Authors' Addresses
-
-
-
-
-
-
-
-Litkowski, et al.        Expires April 10, 2015                [Page 84]
-
-Internet-Draft                  isis-cfg                    October 2014
-
 
    Stephane Litkowski
    Orange
@@ -4733,24 +4751,6 @@ Internet-Draft                  isis-cfg                    October 2014
    Ladislav Lhotka
 
    Email: lhotka@nic.cz
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

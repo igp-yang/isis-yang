@@ -22,7 +22,26 @@ module ietf-isis {
 		"WG List:	&lt;mailto:isis-wg@ietf.org&gt;
 		
 		Editor:		Stephane Litkowski
-					&lt;mailto:stephane.litkowski@orange.com&gt;";
+					&lt;mailto:stephane.litkowski@orange.com&gt;
+
+				Derek Yeung
+					&lt;mailto:myeung@cisco.com&gt;
+				Acee Lindem
+					&lt;mailto:acee@cisco.com&gt;
+				Jeffrey Zhang
+					&lt;mailto:zzhang@juniper.net&gt;
+				Ladislav Lhotka
+					&lt;mailto:llhotka@nic.cz&gt;
+				Yi Yang
+					&lt;mailto:yiya@cisco.com&gt;
+				Dean Bogdanovic
+					&lt;mailto:deanb@juniper.net&gt;
+				Kiran Agrahara Sreenivasa
+					&lt;mailto:kkoushik@brocade.com&gt;
+				Yingzhen Qu
+					&lt;mailto:yiqu@cisco.com&gt;
+
+		";
 	
 	description 
 		"The YANG module defines a generic configuration model for 
