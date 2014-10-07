@@ -31,6 +31,30 @@
         <email>stephane.litkowski@orange.com</email>
       </address>
     </author>
+	<author fullname="Derek Yeung" initials="D" surname="Yeung">
+      <organization>Cisco Systems</organization>
+      <address>
+        <email>myeung@cisco.com</email>
+      </address>
+    </author>
+	<author fullname="Acee Lindem" initials="A" surname="Lindem">
+      <organization>Cisco Systems</organization>
+      <address>
+        <email>acee@cisco.com</email>
+      </address>
+    </author>
+	<author fullname="Jeffrey Zhang" initials="J" surname="Zhang">
+      <organization>Juniper Networks</organization>
+      <address>
+        <email>zzhang@juniper.net</email>
+      </address>
+    </author>
+	<author fullname="Ladislav Lhotka" initials="L" surname="Lhotka">
+      <organization></organization>
+      <address>
+        <email>lhotka@nic.cz</email>
+      </address>
+    </author>
     <date year="2014"/>
     <area/>
     <workgroup>ISIS Working Group</workgroup>
@@ -62,15 +86,12 @@
       </section>
     </section>
     <section anchor="design" title="Design of the Data Model">
-      <t>The ISIS YANG module is divided in two main containers:
-      <list style="symbols">
-	<t>isis-cfg: that contains writable configuration
-	objects.</t>
-	<t>isis-state: that contains read-only states.</t>
-      </list></t>
-      <t>The container isis-cfg and isis-state are augmenting the
+      <t>The ISIS YANG module is divided in two main containers "isis"
+      that are augmenting the
       "routing-protocol" lists in ietf-routing module with specific
       ISIS parameters.</t>
+	  <t>One container contains the writable parameters, while the other
+	  contains the operational states.</t>
       <t>The figure below describe the overall structure of the isis
       YANG module:</t>
 
@@ -79,50 +100,55 @@
       </figure>
 
       <section anchor="yang-isis-global" title="ISIS Configuration">
+	    <t>
+		The ISIS configuration currently supports both VRF-centric and
+		protocol-centric configuration. This may be changed in future.
+		In a protocol-centric configuration, the isis configuration
+		is applied within the standard-routing-instance and the instance list 
+		helps to reference the routing-instance where ISIS is activated.
+		In a VRF-centric configuration, the isis configuration is applied directly
+		within the appropriate routing-instance where ISIS is activated. In this case,
+		the instance list will contain a single element.
+		</t>
         <t>The ISIS configuration container is divided in:
 	<list style="symbols">
 	  <t>Global parameters.</t>
-	  <t>Level specific parameters (see <xref
-	  target="yang-level"/>).</t>
 	  <t>Per interface configuration (see <xref
 	  target="yang-interface"/>).</t>
 	</list></t>
       </section>
 
       <section anchor="yang-multitopology" title="Multitopology Parameters">
-        <t>The multitopology section is used to enable support of MT
+        <t>The topologies list  is used to enable support of MT
         extensions for specific address families.</t>
-        <t>A boolean is associated with each topology type, defining
-        if the topology is enabled or not.</t>
-
-	<figure>
-	    &isis-multi-topology-cfg.tree;
-	</figure>
+        <t>Each topology should refer to an existing RIB.</t>
 
       </section>
 
       <section anchor="yang-level" title="Per-Level Parameters">
-        <t>The level parameter section of the ISIS instance describes
-        the global parameters for level 1 and 2 including
-        authentication, protocol preferences, default metrics ...</t>
-        <t>Level specific parameters override parameters contained
-        directly under isis-cfg container.</t>
-
-	<figure>
-	    &isis-level-1-cfg.tree;
-	</figure>
-
+        <t>Some parameters support per level configuration. In this case, 
+		the parameter is built as a list, so different values could be used
+		for each level. The "level-all" permits to apply a value to both levels.</t>
+		<figure>
+		<artwork>
+        +--rw priority* [level]
+        |  +--rw value?   uint8
+        |  +--rw level    level
+		</artwork>
+		</figure>
       </section>
 
       <section anchor="yang-interface" title="Per-Interface Parameters">
         <t>The per-interface section of the ISIS instance describes
         the interface specific parameters.</t>
-        <t>Each interface has interface-specific parameters and
-        level-specific parameters. A level-specific parameter always
-        override interface-specific parameter and an
-        interface-specific parameter always override an isis global
-        parameter (defined in isis-cfg).
-	</t>
+		<t>The interface is referenced using a string. It would be up to the 
+		server device to check if the interface exists or not. Using a string
+		permits to support some specific implementations that use the "interface
+		all" stanza to apply a configuration to all interfaces.</t>
+        <t>Each interface has interface-specific parameters that may have
+		a different value per level as described in previous section.
+		An interface-specific parameter always override an ISIS global
+        parameter .</t>
 
 	<figure>
 	    &interfaces.tree;
@@ -131,9 +157,17 @@
       </section>
 
       <section anchor="yang-op" title="Operational State">
-        <t>isis-state container provides operational states for
+        <t>"isis" container provides operational states for
         ISIS. This container is divided in multiple components:
 	<list style="symbols">
+		<t>system-counters : provides statistical informations about
+		the global system.</t>
+		<t>interface-counters : provides statistical informations for
+		each interface.</t>
+		<t>packet-counters : provides statistical informations for
+		each type of PDU.</t>
+		<t>interface : provides configuration state information for
+		each interface.</t>
 	  <t>adjacencies: provides state information about current
 	  ISIS adjacencies.</t>
 	  <t>spf-log: provides information about SPF events on the
@@ -141,7 +175,7 @@
 	  <t>lsp-log: provides information about LSP events on the
 	  node (reception of an LSP or modification of local LSP).</t>
 	  <t>database: provides details on current LSDB.</t>
-	  <t>hostname: provides information about system-id to
+	  <t>hostnames: provides information about system-id to
 	  hostname mappings.</t>
 	</list></t>
       </section>
@@ -165,11 +199,53 @@
     </section>
 
     <section anchor="notif" title="Notifications">
-      <t>The "ietf-isis" module a new notification
-      "isis-adjacency-updown".  This notification is triggered when an
-      ISIS adjacency moves to Up or Down state.</t>
-      <t>This notification provides details on the affected adjacency
-      and its new state.</t>
+      <t>The "ietf-isis" module introduces some notifications :
+	  <list>
+	  <t>database-overload : raised when overload condition is changed.</t>
+	  <t>lsp-too-large : raised when the system tries to propagate a too large PDU.</t>
+	  <t>corrupted-lsp-detected : raised when the system find
+		   that an LSP that was stored in memory has
+		   become corrupted.</t>
+		<t>attempt-to-exceed-max-sequence : This notification is sent when the system
+		  wraps the 32-bit sequence counter of an LSP.</t>
+		<t>id-len-mismatch : This notification is sent when we receive a PDU
+		  with a different value for the System ID length.</t>
+		<t>max-area-addresses-mismatch : This notification is sent when we receive a PDU
+		  with a different value for the Maximum Area Addresses.</t>
+		<t>own-lsp-purge : This notification is sent when the system
+		  receives a PDU with its own system ID and zero age.</t>
+		<t>sequence-number-skipped : This notification is sent when the system
+		  receives a PDU with its own system ID and 
+		  different contents. The system has to reissue
+		  the LSP with a higher sequence number.</t>
+		<t>authentication-type-failure : This notification is sent when the system
+		  receives a PDU with the wrong authentication type
+		  field.</t>
+		<t>authentication-failure : This notification is sent when the system
+		  receives a PDU with the wrong authentication 
+		  information.</t>
+		<t>version-skew : This notification is sent when the system
+		  receives a PDU with a different protocol version
+		  number.</t>
+		<t>area-mismatch : This notification is sent when the system
+		  receives a Hello PDU from an IS that does
+		  not share any area address.</t>
+		<t>rejected-adjacency : This notification is sent when the system
+		  receives a Hello PDU from an IS but does not
+		  establish an adjacency for some reason.</t>
+		<t>protocols-supported-mismatch : This notification is sent when the system
+		  receives a non pseudonode LSP that has no matching
+		  protocol supported.</t>
+		<t>lsp-error-detected : This notification is sent when the system
+		  receives a  LSP with a parse error.</t>
+		<t>adjacency-change : This notification is sent when an ISIS adjacency
+		   moves to Up state or to Down state.</t>
+		<t>lsp-received : This notification is sent when a LSP
+		  is received.</t>
+		<t>lsp-generation : This notification is sent when a LSP
+		  is regenerated.</t>
+	  </list>
+      </t>
 
       <figure>
 	&notifications.tree;
@@ -178,11 +254,11 @@
     </section>
 
     <section anchor="interaction" title="Interaction with Other YANG Modules">
-      <t>The "isis-cfg" container augments the
+      <t>The "isis" configuration container augments the
       "/rt:routing/rt:routing-instance/rt:routing-protocols/routing-protocol"
       container of the ietf-routing module by defining ISIS specific
       parameters.</t>
-      <t>The "isis-state" container augments the
+      <t>The "isis" operational state container augments the
       "/rt:routing-state/rt:routing-instance/rt:routing-protocols/routing-protocol"
       container of the ietf-routing module by defining ISIS specific
       operational states.</t>
@@ -245,6 +321,11 @@
       NETCONF using SSH (<xref target="RFC6242"/>).</t>
     </section>
 
+	<section anchor="Contributors" title="Contributors">
+      <t>Authors would like to thank 
+	  Kiran Agrahara Sreenivasa, Dean Bogdanovic, Yingzhen Qu, Yi Yang
+	  for their major contributions to the draft.</t>
+    </section>
     <section anchor="Acknowledgements" title="Acknowledgements">
       <t>TBD.</t>
     </section>
