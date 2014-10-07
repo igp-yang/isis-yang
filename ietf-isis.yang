@@ -1098,7 +1098,8 @@ module ietf-isis {
 		
 			list instance {
 				must "count(area-address) > 0" {
-					error-message "At least one area-address must be configured.";
+					error-message "At least one area-address 
+					must be configured.";
 					description
 					 "Enforce configuration of at least one area.";
 				}	
@@ -1109,11 +1110,12 @@ module ietf-isis {
 					type rt:routing-instance-ref;
 					  description 
 						"Reference routing instance. 
-						For protocol centric model, which is supported in 
-						default-instance only, this could reference any VRF 
-						routing-instance.
-						For VRF centric model, must reference the enclosing 
-						routing-instance.";
+						For protocol centric model, which is
+						supported in 
+						default-instance only, this could reference 
+						any VRF routing-instance.
+						For VRF centric model, must reference the 
+						enclosing routing-instance.";
 				}
 				
 				leaf level {
@@ -1297,7 +1299,8 @@ module ietf-isis {
 						 authentication key MUST NOT be presented
 						 in plaintext format upon a get-config reply. 
 						 Authors recommends
-						 to use MD5 hash to present the authentication-key";
+						 to use MD5 hash to present the 
+						 authentication-key";
 					}
 					leaf level {
 						type level;
@@ -1333,20 +1336,26 @@ module ietf-isis {
 						type enumeration {
 							enum wide-only {
 								description 
-								 "Advertise new metric style only (RFC5305)";
+								 "Advertise new metric style only 
+								 (RFC5305)";
 							}
 							enum old-only {
 								description 
-								 "Advertise old metric style only (RFC1195)";
+								 "Advertise old metric style only 
+								 (RFC1195)";
 							}
 							enum both {
-								description "Advertise both metric styles";
+								description "Advertise both metric 
+								styles";
 							}
 						}
 						description 
-						 "This leaf describes the type of metric to be generated.
-						 Wide-only means only new metric style is generated, 
-						 old-only means that only old style metric is generated, 
+						 "This leaf describes the type of metric 
+						 to be generated.
+						 Wide-only means only new metric style 
+						 is generated, 
+						 old-only means that only old style metric 
+						 is generated, 
 						 and both means that both are advertised.
 						 This leaf is only affecting IPv4 metrics.";
 					}
@@ -1380,8 +1389,8 @@ module ietf-isis {
 					leaf value {
 						type uint8;
 						description 
-						 "This leaf defines the protocol preference for external 
-						  routes.";
+						 "This leaf defines the protocol preference for 
+						 external routes.";
 					}
 					leaf level {
 						type level;
@@ -1389,8 +1398,8 @@ module ietf-isis {
 							"Level applicability.";
 					}
 					description 
-						 "This leaf defines the protocol preference for external 
-						  routes.";
+						 "This leaf defines the protocol preference for 
+						 external routes.";
 				}
 				list default-metric {
 					key level;
@@ -1420,7 +1429,8 @@ module ietf-isis {
 					leaf enabled {
 						type boolean;
 						description
-							"Describes the activation state of the AF.";
+							"Describes the activation state of the 
+							 AF.";
 					}
 
 					list default-metric {
@@ -1451,7 +1461,8 @@ module ietf-isis {
 					leaf enabled {
 						type boolean;
 						description
-							"Describes the activation state of the AF.";
+							"Describes the activation state of the 
+							 AF.";
 					}
 					leaf name {
 						type rt:rib-ref;
@@ -1515,29 +1526,29 @@ module ietf-isis {
 							type level;
 							default "level-all";
 							description 
-							 "This leaf defines the associated ISIS level 
-							  of the interface.";
+							 "This leaf defines the associated ISIS 
+							 level of the interface.";
 						}
 						leaf lsp-pacing-interval {
 							type uint16;
 							units "milliseconds";
 							description 
-							 "This leaf defines the interval between LSP 
-							  transmissions in milli-seconds";
+							 "This leaf defines the interval between 
+							  LSP transmissions in milli-seconds";
 						}
 						leaf lsp-retransmit-interval {
 							type uint16;
 							units "seconds";
 							description 
-							 "This leaf defines the interval between retransmission
-							 of LSP";
+							 "This leaf defines the interval between 
+							 retransmission of LSP";
 						}
 						leaf passive {
 							type boolean;
 							default "false";
 							description 
-							 "This leaf defines if interface is in passive 
-							  mode (ISIS not running, 
+							 "This leaf defines if interface is in 
+							  passive mode (ISIS not running, 
 							  but network is advertised).";
 						}
 						leaf csnp-interval {
@@ -1558,8 +1569,8 @@ module ietf-isis {
 						leaf hello-padding {
 							type boolean;
 							description 
-							 "This leaf defines if ISIS Hellos would be 
-							  padded up to MTU size.";
+							 "This leaf defines if ISIS Hellos would 
+							 be padded up to MTU size.";
 						}
 						
 						leaf mesh-group-enabled {
@@ -1625,19 +1636,23 @@ module ietf-isis {
 								type authentication-type;
 								
 								description
-								 "This leaf describes the authentication type
-								 to be used in hello messages.";
+								 "This leaf describes the authentication 
+								 type to be used in hello messages.";
 							}
 							leaf key {
 								type string;
 								description
-								 "This leaf describes the authentication key
+								 "This leaf describes the 
+								 authentication key
 								 to be used in hello messages.
 								 For security reason, the
-								 authentication key MUST NOT be presented
-								 in plaintext format upon a get-config reply. 
+								 authentication key MUST 
+								 NOT be presented
+								 in plaintext format upon a 
+								 get-config reply. 
 								 Authors recommends
-								 to use MD5 hash to present the authentication-key";
+								 to use MD5 hash to present the 
+								 authentication-key";
 							}
 							leaf level {
 								type level;
@@ -1656,7 +1671,8 @@ module ietf-isis {
 								type uint16;
 								units "seconds";
 								description 
-								 "This leaf defines the interval of hello messages.";
+								 "This leaf defines the interval of 
+								 hello messages.";
 							}
 							leaf level {
 								type level;
@@ -1664,7 +1680,8 @@ module ietf-isis {
 									"Level applicability.";
 							}
 							description 
-								 "This leaf defines the interval of hello messages.";
+								 "This leaf defines the interval of 
+								 hello messages.";
 						}
 						list hello-multiplier {
 							key level;
@@ -1672,8 +1689,9 @@ module ietf-isis {
 							leaf value {
 								type uint16;
 								description 
-								 "This leaf defines the number of hello failed to be 
-								  received before declaring the adjacency down.";
+								 "This leaf defines the number of 
+								 hello failed to be received before 
+								 declaring the adjacency down.";
 							}
 							leaf level {
 								type level;
@@ -1681,8 +1699,9 @@ module ietf-isis {
 									"Level applicability.";
 							}
 							description 
-								 "This leaf defines the number of hello failed to be 
-								  received before declaring the adjacency down.";
+								 "This leaf defines the number of 
+								  hello failed to be received before 
+								  declaring the adjacency down.";
 						}
 						
 						
@@ -1695,7 +1714,8 @@ module ietf-isis {
 								}
 								
 								description
-								 "This leaf describes the priority of the interface
+								 "This leaf describes the priority of 
+								 the interface
 								 for DIS election.";
 							}
 							leaf level {
@@ -1704,7 +1724,8 @@ module ietf-isis {
 									"Level applicability.";
 							}
 							description
-								 "This leaf describes the priority of the interface
+								 "This leaf describes the priority of 
+								 the interface
 								 for DIS election.";
 						}
 						list af {
@@ -1718,7 +1739,8 @@ module ietf-isis {
 							leaf bfd-enabled {
 								type empty;
 								description
-									"If the leaf is present, BFD is enabled.";
+									"If the leaf is present, 
+									 BFD is enabled.";
 							}
 							list metric {
 								key level;
@@ -1933,9 +1955,11 @@ module ietf-isis {
 					leaf max-area-addresses-mismatch {
 						type uint32;
 						description
-						 "The number of times an IS-IS PDU with according
-						  max area address field differs from that for
-						  this system has been received on this interface.";
+						 "The number of times an IS-IS PDU with 
+						  according max area address field 
+						  differs from that for
+						  this system has been received on this 
+						  interface.";
 					}
 					leaf authentication-type-fails {
 						type uint32;
@@ -2586,10 +2610,10 @@ module ietf-isis {
 		}
 		description
 		  "This notification is sent when we attempt
-		   to propagate an LSP that is larger than the dataLinkBlockSize
-		   for the circuit.
-		   The notification generation must be throttled with at least
-		   a 5 second gap.
+		   to propagate an LSP that is larger than the 
+		   dataLinkBlockSize for the circuit.
+		   The notification generation must be throttled 
+		   with at least a 5 second gap.
 		   ";
 	}
 	
@@ -2637,8 +2661,8 @@ module ietf-isis {
 		description
 		  "This notification is sent when we receive a PDU
 		  with a different value for the System ID length.
-		  The notification generation must be throttled with at least
-		   a 5 second gap. 
+		  The notification generation must be throttled 
+		  with at least a 5 second gap. 
 		   ";
 	}
 
@@ -2659,8 +2683,8 @@ module ietf-isis {
 		description
 		  "This notification is sent when we receive a PDU
 		  with a different value for the Maximum Area Addresses.
-		  The notification generation must be throttled with at least
-		   a 5 second gap. 
+		  The notification generation must be throttled 
+		  with at least a 5 second gap. 
 		   ";
 	}
 	
@@ -2706,8 +2730,8 @@ module ietf-isis {
 		  "This notification is sent when the system
 		  receives a PDU with the wrong authentication type
 		  field.
-		  The notification generation must be throttled with at least
-		   a 5 second gap. 
+		  The notification generation must be throttled with 
+		  at least a 5 second gap. 
 		   ";
 	}
 	
@@ -2723,8 +2747,8 @@ module ietf-isis {
 		  "This notification is sent when the system
 		  receives a PDU with the wrong authentication 
 		  information.
-		  The notification generation must be throttled with at least
-		   a 5 second gap. 
+		  The notification generation must be throttled with 
+		  at least a 5 second gap. 
 		   ";
 	}
 	
