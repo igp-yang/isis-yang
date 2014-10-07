@@ -4,8 +4,8 @@ module ietf-isis {
 	prefix isis;
 	
 	import ietf-routing {
-		prefix "rt";
-    }
+            prefix "rt";
+        }
 
 	import ietf-inet-types {
 		prefix inet;
@@ -28,6 +28,18 @@ module ietf-isis {
 		"The YANG module defines a generic configuration model for 
 		ISIS common across all of the vendor implementations.";
 	
+	revision 2014-10-07 {
+		description
+			"
+			* Removed spf parameters (should be part of
+			  vendor specific extensions.
+			* Removed hello parameters at global level.
+			* Interface configuration uses a string rather 
+			than a reference. This permits to map to some
+			vendor specific configuration.
+			"
+			
+	}
 	revision 2014-09-26 {
 		description
 			"
@@ -62,7 +74,7 @@ module ietf-isis {
 		* Add notifications to be aligned with MIB4444
 		* Add packet-counters, interface-counters, system-counters 
 		  states
-		* Add 3way handshake support
+		* Add 3-way handshake support
 		* Rename isis-adjacency-updown to adjacency-change
 		* Add notification for LSP reception
 		* Use feature for reference BW
@@ -86,7 +98,7 @@ module ietf-isis {
 	revision 2014-06-20 {
 		description "
 		* isis-op renamed to isis-state.
-		* Multiple instances under isis are removed.
+		* Multiple instances under ISIS are removed.
 		* interface-cfg grouping removed and content 
 		  is directly included in container isis.
 		* TLVxx renamed with human-readable name in isis-database.
@@ -94,7 +106,7 @@ module ietf-isis {
 		* Reference to core routing module were fixed.
 		* Namespace fixed.
 		* Add simple-iso-address type.
-		* area-id and system-id in isis container are merged to 
+		* area-id and system-id in ISIS container are merged to 
 		  nsap-address.
 		* Add isis-system-id type.
 		* Add isis-lsp-id type.
@@ -162,23 +174,7 @@ module ietf-isis {
 			"Graceful restart support as per RFC5306.";
 	}
 	
-	feature ispf {
-		description
-			"Incremental SPF computation.";
-	}
-	
-	feature spf-exp-delay {
-		description
-			"SPF computation delay using exponential backoff
-			 algorithm.";
-	}
-	
-	feature spf-2step-delay {
-		description
-			"SPF computation delay using 2step delay
-			 algorithm.";
-	}
-	
+
 	feature lsp-gen-interval-exp-delay {
 		description
 			"LSP generation delay using exp backoff.";
@@ -200,7 +196,7 @@ module ietf-isis {
 			+"rt:routing-protocols/rt:routing-protocol/rt:name";
 		}
 		description
-	     "This type is used for leafs that reference state data of 
+	     "This type is used for leaves that reference state data of 
 	      an ISIS protocol instance.";
 	}
 	
@@ -242,7 +238,7 @@ module ietf-isis {
 	typedef extended-circuit-id {
 		type uint32;
 		description
-		 "This type defines the circuit ID
+		 "This type defines the extended circuit ID
 		 associated with an interface.";
 	}
 	
@@ -292,7 +288,7 @@ module ietf-isis {
 			}
 			enum "level-all" {
 				description 
-				 "This enum describes both level capability.";
+				 "This enum describes both levels capability.";
 			}
 		}
 		default "level-all";
@@ -306,7 +302,7 @@ module ietf-isis {
 			range "1 .. 2";
 		}
 		description
-		 "This type defines a current isis level.";
+		 "This type defines a current ISIS level.";
 	}
 	
 	typedef lsp-id {
@@ -316,7 +312,7 @@ module ietf-isis {
              +'{4}\.[0-9][0-9]-[0-9][0-9]';
 		}
 		description 
-		 "This type defines isis LSP ID using pattern,
+		 "This type defines ISIS LSP ID using pattern,
 		  system id looks like : 0143.0438.AeF0.02-01";
 	}
 	
@@ -344,7 +340,7 @@ module ietf-isis {
 			 '[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.[0-9A-Fa-f]{4}\.00';
 		}
 		description 
-		 "This type defines isis system id using pattern,
+		 "This type defines ISIS system id using pattern,
 		  system id looks like : 0143.0438.AeF0.00";
 	}
 	
@@ -388,7 +384,7 @@ module ietf-isis {
 	grouping notification-instance-hdr {
 		description
 		 "This group describes common instance specific
-		  datas for notifications.";
+		  data for notifications.";
 		leaf instance-name {
 			type string;
 			description
@@ -404,7 +400,7 @@ module ietf-isis {
 	grouping notification-interface-hdr {
 		description
 		 "This group describes common interface specific
-		  datas for notifications.";
+		  data for notifications.";
 		leaf interface-name {
 			type string;
 			description
@@ -428,7 +424,7 @@ module ietf-isis {
 		leaf metric {
 			type uint32;
 			description
-			 "This leaf describes isis metric of a route.";
+			 "This leaf describes ISIS metric of a route.";
 		}
 		leaf-list tag {
 			type uint64;
@@ -473,7 +469,7 @@ module ietf-isis {
 				}
 			}
 			description
-			 "This leaf describes the type of isis route.";
+			 "This leaf describes the type of ISIS route.";
 		}
 	}
 	
@@ -521,13 +517,13 @@ module ietf-isis {
 		leaf default-metric {
 			type std-metric;
 			description
-			 "This leaf describes the isis default metric value";
+			 "This leaf describes the ISIS default metric value";
 		}
 		container delay-metric {
 			leaf metric {
 				type std-metric;
 				description
-				 "This leaf describes the isis delay metric value";
+				 "This leaf describes the ISIS delay metric value";
 			}
 			leaf supported {
 				type boolean;
@@ -543,7 +539,7 @@ module ietf-isis {
 			leaf metric {
 				type std-metric;
 				description
-				 "This leaf describes the isis delay metric value";
+				 "This leaf describes the ISIS expense metric value";
 			}
 			leaf supported {
 				type boolean;
@@ -558,7 +554,7 @@ module ietf-isis {
 			leaf metric {
 				type std-metric;
 				description
-				 "This leaf describes the isis delay metric value";
+				 "This leaf describes the ISIS error metric value";
 			}
 			leaf supported {
 				type boolean;
@@ -595,7 +591,7 @@ module ietf-isis {
 		leaf metric {
 			type wide-metric;
 			description
-			 "This leaf describes the isis metric value";
+			 "This leaf describes the ISIS metric value";
 		}
 		leaf-list tag {
 			type uint32;
@@ -606,7 +602,7 @@ module ietf-isis {
 		leaf-list tag64 {
 			type uint64;
 			description
-			 "This leaf describes a list of tags associated with
+			 "This leaf describes a list of 64-bit tags associated with
 			 the prefix.";
 		}
 	}
@@ -634,7 +630,7 @@ module ietf-isis {
 		leaf metric {
 			type wide-metric;
 			description
-			 "This leaf describes the isis metric value";
+			 "This leaf describes the ISIS metric value";
 		}
 		leaf-list tag {
 			type uint32;
@@ -645,7 +641,7 @@ module ietf-isis {
 		leaf-list tag64 {
 			type uint64;
 			description
-			 "This leaf describes a list of tags associated with
+			 "This leaf describes a list of 64-bit tags associated with
 			 the prefix.";
 		}
 	}
@@ -662,7 +658,7 @@ module ietf-isis {
 		leaf metric {
 			type wide-metric;
 			description
-			 "This leaf describes the isis metric value";
+			 "This leaf describes the ISIS metric value";
 		}
 	}
 	
@@ -683,13 +679,13 @@ module ietf-isis {
 		leaf default-metric {
 			type std-metric;
 			description
-			 "This leaf describes the isis default metric value";
+			 "This leaf describes the ISIS default metric value";
 		}
 		container delay-metric {
 			leaf metric {
 				type std-metric;
 				description
-				 "This leaf describes the isis delay metric value";
+				 "This leaf describes the ISIS delay metric value";
 			}
 			leaf supported {
 				type boolean;
@@ -704,7 +700,7 @@ module ietf-isis {
 			leaf metric {
 				type std-metric;
 				description
-				 "This leaf describes the isis delay metric value";
+				 "This leaf describes the ISIS delay expense value";
 			}
 			leaf supported {
 				type boolean;
@@ -719,7 +715,7 @@ module ietf-isis {
 			leaf metric {
 				type std-metric;
 				description
-				 "This leaf describes the isis delay metric value";
+				 "This leaf describes the ISIS error metric value";
 			}
 			leaf supported {
 				type boolean;
@@ -768,22 +764,22 @@ module ietf-isis {
 				bit ATTACHED-ERROR {
 					description
 					 "If set, the originator is attached to
-					  another area using the refered metric.";
+					  another area using the referred metric.";
 				}
 				bit ATTACHED-EXPENSE {
 					description
 					 "If set, the originator is attached to
-					  another area using the refered metric.";
+					  another area using the referred metric.";
 				}
 				bit ATTACHED-DELAY {
 					description
 					 "If set, the originator is attached to
-					  another area using the refered metric.";
+					  another area using the referred metric.";
 				}
 				bit ATTACHED-DEFAULT {
 					description
 					 "If set, the originator is attached to
-					  another area using the refered metric.";
+					  another area using the referred metric.";
 				}
 				bit OVERLOAD {
 					description
@@ -848,7 +844,7 @@ module ietf-isis {
 				 "List of prefixes.";
 			}
 			description 
-			 "This container describes list of ipv4 internal
+			 "This container describes list of IPv4 internal
 			 reachability information.
 			 ISIS reference is TLV 128.";
 		}
@@ -869,7 +865,7 @@ module ietf-isis {
 				 "List of prefixes.";
 			}
 			description 
-			 "This container describes list of ipv4 external
+			 "This container describes list of IPv4 external
 			 reachability information.
 			 ISIS reference is TLV 130.";
 		}
@@ -877,7 +873,7 @@ module ietf-isis {
 		leaf-list ipv4-addresses {
 			type inet:ipv4-address;
 			description 
-				"This leaf describes the ipv4 addresses of the node.
+				"This leaf describes the IPv4 addresses of the node.
 				ISIS reference is TLV 132.";
 		}
 		
@@ -899,7 +895,7 @@ module ietf-isis {
 				 "List of prefixes.";
 			}
 			description 
-			 "This container describes list of ipv4 extended
+			 "This container describes list of IPv4 extended
 			 reachability information.
 			 ISIS reference is TLV 135.";
 		}
@@ -966,7 +962,7 @@ module ietf-isis {
 						bit ATTACHED {
 							description
 							 "If set, the originator is attached to
-							  another area using the refered metric.";
+							  another area using the referred metric.";
 						}
 					}
 					description
@@ -984,7 +980,7 @@ module ietf-isis {
 		leaf-list ipv6-addresses {
 			type inet:ipv6-address;
 			description 
-			 "This leaf describes the ipv6 interface 
+			 "This leaf describes the IPv6 interface 
 			 addresses of the node.
 			 ISIS reference is TLV 232.";
 		}
@@ -1009,7 +1005,7 @@ module ietf-isis {
 			
 			}
 			description 
-			 "This container describes list of ipv4 
+			 "This container describes list of IPv4 
 			 reachability information in multi-topology
 			 environment.
 			 ISIS reference is TLV 235.";
@@ -1031,7 +1027,7 @@ module ietf-isis {
 				 "List of prefixes.";
 			}
 			description 
-			 "This container describes list of ipv6 
+			 "This container describes list of IPv6 
 			 reachability information in multi-topology
 			 environment.
 			 ISIS reference is TLV 237.";
@@ -1045,7 +1041,7 @@ module ietf-isis {
 				 "List of prefixes.";
 			}
 			description 
-			 "This container describes list of ipv6 
+			 "This container describes list of IPv6 
 			 reachability information.
 			 ISIS reference is TLV 236.";
 		}
@@ -1137,12 +1133,12 @@ module ietf-isis {
 				leaf ipv4-router-id {
 					type inet:ipv4-address;
 					description 
-					 "Router ID value that would be used in TLV134.";
+					 "Router ID value that would be used in TLV 134.";
 				}
 				leaf ipv6-router-id {
 					type inet:ipv6-address;
 					description 
-					 "Router ID value that would be used in TLV140.";
+					 "Router ID value that would be used in TLV 140.";
 				}
 				leaf reference-bandwidth {
 					if-feature reference-bandwidth;
@@ -1207,83 +1203,7 @@ module ietf-isis {
 					 "Configuration of exponential backoff delay
 					  for LSP generation.";
 				}
-				list ispf {
-					if-feature ispf;
-					key level;
-					
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description
-					 "Activates incremental SPF.";
-				}
-		
-				list spf-exp-delay {
-					if-feature spf-exp-delay;
-					
-					key level;
-					
-					leaf initial {
-						type uint16;
-						units "milliseconds";
-						description
-						 "Initial timer.";
-					}
-					leaf incremental {
-						type uint16;
-						units "milliseconds";
-						description
-						 "Incremental timer.";
-					}
-					leaf maximum {
-						type uint8;
-						units "seconds";
-						description
-						 "Maximum timer.";
-					}
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description
-					 "Configuration of exponential backoff delay
-					  for SPF.";
-				}
-		
-				list spf-2step-delay {
-					if-feature spf-2step-delay;
-					
-					key level;
-					
-					leaf fast-timer {
-						type uint16;
-						units "milliseconds";
-						description
-						 "Rapid run delay timer.";
-					}
-					leaf rapid-runs {
-						type uint16;
-						description
-						 "Number of authorized rapid-runs.";
-					}
-					leaf maximum {
-						type uint8;
-						units "seconds";
-						description
-						 "Maximum timer.";
-					}
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description
-					 "Configuration of two step delay
-					  for SPF.";
-				}
+				
 		
 				container graceful-restart {
 					if-feature graceful-restart;
@@ -1346,24 +1266,6 @@ module ietf-isis {
 					 "Container for CSNP authentication.";
 				}
 				
-				list hello-authentication {
-					key level;
-					
-					leaf value {
-						type boolean;
-						default "true";
-						description
-						 "This leaf describes if HELLO messages must be
-						 authenticated.";
-					}
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description 
-					 "Container for hello authentication";
-				}
 				list authentication-key {
 					key level;
 					
@@ -1584,10 +1486,8 @@ module ietf-isis {
 					list interface {
 						key "name";
 						leaf name {
-							type leafref {
-								path "/rt:routing/rt:routing-instance/"
-								+"rt:interfaces/rt:interface/rt:name";
-							}
+							type string;
+							
 							description 
 							 "Reference to the interface within
 							  the routing-instance.";
@@ -1604,7 +1504,7 @@ module ietf-isis {
 							units "milliseconds";
 							description 
 							 "This leaf defines the interval between LSP 
-							  transmissions in msec";
+							  transmissions in milli-seconds";
 						}
 						leaf lsp-retransmit-interval {
 							type uint16;
@@ -1633,7 +1533,7 @@ module ietf-isis {
 							type boolean;
 							description
 							 "This leaf defines if the interface uses
-							 3way handshake.";
+							 3-way handshake.";
 						}
 						
 						leaf hello-padding {
@@ -1699,30 +1599,17 @@ module ietf-isis {
 							 associated with the interface.";
 						}
 						
-						list hello-authentication-type {
+						list hello-authentication {
 							key level;
 							
-							leaf value {
+							leaf type {
 								type authentication-type;
 								
 								description
 								 "This leaf describes the authentication type
 								 to be used in hello messages.";
 							}
-							
-							leaf level {
-								type level;
-								description
-									"Level applicability.";
-							}
-							description
-							 "This leaf describes the authentication type
-							 to be used in hello messages.";
-						}
-						list hello-authentication-key {
-							key level;
-							
-							leaf value {
+							leaf key {
 								type string;
 								description
 								 "This leaf describes the authentication key
@@ -1739,8 +1626,10 @@ module ietf-isis {
 									"Level applicability.";
 							}
 							description
-							 "hello authentication key.";
+							 "This leaf describes the authentication type
+							 to be used in hello messages.";
 						}
+						
 						list hello-interval {
 							key level;
 							
@@ -2026,7 +1915,7 @@ module ietf-isis {
 						type uint32;
 						description
 						 "The number of times an IS-IS PDU with according
-						  max area address field different from that for
+						  max area address field differs from that for
 						  this system has been received on this interface.";
 					}
 					leaf authentication-type-fails {
@@ -2215,7 +2104,7 @@ module ietf-isis {
 					leaf three-way-handshake {
 						type empty;
 						description
-						 "The interface uses 3way handshake.";
+						 "The interface uses 3-way handshake.";
 					}
 					description
 					 "List of interfaces.";
@@ -2351,7 +2240,7 @@ module ietf-isis {
 					leaf level {
 						type level-number;
 						description
-						 "This leaf describes the level affected bytes
+						 "This leaf describes the level affected by the
 						 the computation.";
 					}
 					leaf spf-delay {
@@ -2417,7 +2306,7 @@ module ietf-isis {
 					leaf level {
 						type level-number;
 						description
-						 "This leaf describes the level affected bytes
+						 "This leaf describes the level affected by the
 						 the computation.";
 					}
 					container lsp {
@@ -2527,7 +2416,7 @@ module ietf-isis {
 		  error-tag and error-app-tag should be set
 		  to a meaningful value.";
 		input {
-			leaf routing-instance-name {
+                    leaf routing-instance-name {
 				type rt:routing-instance-state-ref;
 				mandatory "true";
 				description 
