@@ -47,6 +47,24 @@ module ietf-isis {
 		"The YANG module defines a generic configuration model for 
 		ISIS common across all of the vendor implementations.";
 	
+	revision 2017-10-21 {
+		description
+			"
+			 * Interface metric move from af container to interface 
+			  container
+			 * Hello-padding on interface moved to hello-padding-disable 
+			 with empty type
+			 * three-way-handshake removed
+			 * route preference changed to a choice
+			 * csnp-authentication/psnp-authentication merged 
+			 to authentication container
+			 * lsp-gen-interval-exp-delay removed
+			 * Added overload-max-metric feature
+			 * overload-max-metric is in a separate container
+			";
+		reference "";
+	}
+	
 	revision 2014-10-07 {
 		description
 			"
@@ -57,7 +75,7 @@ module ietf-isis {
 			than a reference. This permits to map to some
 			vendor specific configuration.
 			";
-		reference "";	
+		reference "draft-ietf-isis-yang-isis-00";	
 	}
 	revision 2014-09-26 {
 		description
@@ -165,7 +183,11 @@ module ietf-isis {
 		  adjacency reset action.";
 	}
 	
-	
+	feature overload-max-metric {
+		description
+			"Support of overload by setting
+			 all links to max metric.";
+	}
 	feature prefix-tag {
 		description
 			"Add 32bit tag to prefixes";
@@ -177,6 +199,15 @@ module ietf-isis {
 	feature reference-bandwidth {
 		description
 			"Use a reference bandwidth to compute metric.";
+	}
+	feature ipv4-router-id {
+		description
+		 "Support of IPv4 router ID configuration under ISIS.";
+	}
+	
+	feature ipv6-router-id {
+		description
+		 "Support of IPv6 router ID configuration under ISIS.";
 	}
 	
 	feature multi-topology {
@@ -193,11 +224,6 @@ module ietf-isis {
 			"Graceful restart support as per RFC5306.";
 	}
 	
-
-	feature lsp-gen-interval-exp-delay {
-		description
-			"LSP generation delay using exp backoff.";
-	}
 	
 	feature lsp-refresh {
 		description
@@ -1118,7 +1144,7 @@ module ietf-isis {
 						enclosing routing-instance.";
 				}
 				
-				leaf level {
+				leaf level-type {
 					type level;
 					default "level-all";
 					description
@@ -1152,11 +1178,13 @@ module ietf-isis {
 				
 				
 				leaf ipv4-router-id {
+					if-feature ipv4-router-id;
 					type inet:ipv4-address;
 					description 
 					 "Router ID value that would be used in TLV 134.";
 				}
 				leaf ipv6-router-id {
+					if-feature ipv6-router-id;
 					type inet:ipv6-address;
 					description 
 					 "Router ID value that would be used in TLV 140.";
@@ -1193,39 +1221,7 @@ module ietf-isis {
 					 "This leaf describes the refresh interval of the 
 					  router LSP in seconds.";
 				}
-				list lsp-gen-interval-exp-delay {
-					if-feature lsp-gen-interval-exp-delay;
-					key level;
-					
-					leaf initial {
-						type uint16;
-						units "milliseconds";
-						description
-						 "Initial timer.";
-					}
-					leaf incremental {
-						type uint16;
-						units "milliseconds";
-						description
-						 "Incremental timer.";
-					}
-					leaf maximum {
-						type uint8;
-						units "seconds";
-						description
-						 "Maximum timer.";
-					}
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description
-					 "Configuration of exponential backoff delay
-					  for LSP generation.";
-				}
 				
-		
 				container graceful-restart {
 					if-feature graceful-restart;
 					leaf restart-duration {
@@ -1249,76 +1245,21 @@ module ietf-isis {
 					 "This container activates graceful restart.";
 				}
 				
-				list psnp-authentication {
+				list authentication {
 					key level;
 					
-					leaf value {
+					leaf key {
 						type boolean;
 						default "true";
 						description
-						 "This leaf describes if PSNP messages must be
+						 "This leaf describes if ISIS messages must be
 						 authenticated.";
 					}
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description
-					 "Container for CSNP authentication.";
-				}
-				
-				list csnp-authentication {
-					key level;
-					
-					leaf value {
-						type boolean;
-						default "true";
-						description
-						 "This leaf describes if CSNP messages must be
-						 authenticated.";
-					}
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description
-					 "Container for CSNP authentication.";
-				}
-				
-				list authentication-key {
-					key level;
-					
-					leaf value {
-						type string;
-						description
-						 "This leaf describes the authentication key
-						 to be used.
-						 For security reason, the
-						 authentication key MUST NOT be presented
-						 in plaintext format upon a get-config reply. 
-						 Authors recommends
-						 to use MD5 hash to present the 
-						 authentication-key";
-					}
-					leaf level {
-						type level;
-						description
-							"Level applicability.";
-					}
-					description
-					 "Container for authentication key.";
-				}
-				
-				list authentication-type {
-					key level;
-					
-					leaf value {
+					leaf type {
 						type authentication-type;
 						description
-						 "This leaf describes the authentication type
-						 to be used.";
+						 "This leaf describes the authentication 
+						  type to be used.";
 					}
 					leaf level {
 						type level;
@@ -1326,8 +1267,10 @@ module ietf-isis {
 							"Level applicability.";
 					}
 					description
-					 "Container for authentication-type";
+					 "Container for ISIS authentication.";
 				}
+				
+
 				
 				list metric-type {
 					key level;
@@ -1370,37 +1313,42 @@ module ietf-isis {
 				list preference {
 					key level;
 					
-					leaf value {
-						type uint8;
-						description 
-						 "This leaf defines the protocol preference.";
-					}
-					leaf level {
-						type level;
+					choice granularity {
+						case detail {
+							leaf internal {
+								type uint8;
+								description 
+									"This leaf defines the protocol 
+									 preference for internal routes.";
+							}
+							leaf external {
+								type uint8;
+								description 
+									"This leaf defines the protocol 
+									 preference for external routes.";
+							}
+						}
+						case coarse {
+							leaf default {
+								type uint8;
+								description 
+									"This leaf defines the protocol 
+									 preference for all ISIS routes.";
+							}
+						}
 						description
-							"Level applicability.";
+						 "Choice for implementation of route preference.";
 					}
-					description 
-						 "This leaf defines the protocol preference.";
-				}
-				list external-preference {
-					key level;
 					
-					leaf value {
-						type uint8;
-						description 
-						 "This leaf defines the protocol preference for 
-						 external routes.";
-					}
 					leaf level {
 						type level;
 						description
 							"Level applicability.";
 					}
 					description 
-						 "This leaf defines the protocol preference for 
-						 external routes.";
+						 "This leaf defines the protocol preference.";
 				}
+				
 				list default-metric {
 					key level;
 					
@@ -1481,20 +1429,34 @@ module ietf-isis {
 						description
 						 "This leaf defines the overload status.";
 					}
-					leaf type {
-						type enumeration {
-							enum "max-metric" {
-								description
-								 "Advertise max metric for all links.";
-							}
-							enum "overload-bit" {
-								description
-								 "Set overload bit";
-							}
-						}
+					
+					leaf timeout {
+						type uint16;
+						units "seconds";
 						description
-						 "Defines how the overload status is set.";
+						 "This leaf defines the timeout in seconds
+						  of the overload condition.";
 					}
+					leaf level {
+						type level;
+						description
+							"Level applicability of the metric.";
+					}
+					description 
+					 "This leaf describes if the router is 
+					  set to overload state.";
+				}
+				
+				list overload-max-metric {
+					if-feature overload-max-metric;
+					key level;
+					
+					leaf status {
+						type boolean;
+						description
+						 "This leaf defines the overload status.";
+					}
+					
 					leaf timeout {
 						type uint16;
 						units "seconds";
@@ -1558,19 +1520,11 @@ module ietf-isis {
 							 "This leaf defines the interval of CSNP 
 							  messages.";
 						}
-						
-						leaf three-way-handshake {
-							type boolean;
-							description
-							 "This leaf defines if the interface uses
-							 3-way handshake.";
-						}
-						
-						leaf hello-padding {
-							type boolean;
+	
+						leaf hello-padding-disable {
+							type empty;
 							description 
-							 "This leaf defines if ISIS Hellos would 
-							 be padded up to MTU size.";
+							 "This leaf disables ISIS hello padding.";
 						}
 						
 						leaf mesh-group-enabled {
@@ -1728,6 +1682,22 @@ module ietf-isis {
 								 the interface
 								 for DIS election.";
 						}
+						list metric {
+							key level;
+							
+							leaf value {
+								type wide-metric;
+								description
+								 "Metric value.";
+							}
+							leaf level {
+								type level;
+								description
+									"Level applicability.";
+							}
+							description
+							 "Container for interface metric";
+						}
 						list af {
 							key af;
 							
@@ -1742,26 +1712,11 @@ module ietf-isis {
 									"If the leaf is present, 
 									 BFD is enabled.";
 							}
-							list metric {
-								key level;
-								
-								leaf value {
-									type wide-metric;
-									description
-									 "Metric value.";
-								}
-								leaf level {
-									type level;
-									description
-										"Level applicability.";
-								}
-								description
-								 "Container for interface metric";
-							}
+							
 							description
 							 "List of AFs.";
 						}
-						
+
 						list topologies {
 							key name;
 							

@@ -10,47 +10,36 @@ augment /rt:active-route/rt:output/rt:route:
 augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol:
    +--rw isis
       +--rw instance* [routing-instance]
-         +--rw routing-instance              rt:routing-instance-ref
-         +--rw level?                        level
-         +--rw system-id?                    system-id
-         +--rw maximum-area-addresses?       uint8 {maximum-area-addresses}?
-         +--rw area-address*                 area-address
-         +--rw ipv4-router-id?               inet:ipv4-address
-         +--rw ipv6-router-id?               inet:ipv6-address
-         +--rw reference-bandwidth?          uint32 {reference-bandwidth}?
-         +--rw lsp-mtu?                      uint16
-         +--rw lsp-lifetime?                 uint16
-         +--rw lsp-refresh?                  uint16 {lsp-refresh}?
-         +--rw lsp-gen-interval-exp-delay* [level] {lsp-gen-interval-exp-delay}?
-         |  +--rw initial?       uint16
-         |  +--rw incremental?   uint16
-         |  +--rw maximum?       uint8
-         |  +--rw level          level
+         +--rw routing-instance          rt:routing-instance-ref
+         +--rw level-type?               level
+         +--rw system-id?                system-id
+         +--rw maximum-area-addresses?   uint8 {maximum-area-addresses}?
+         +--rw area-address*             area-address
+         +--rw ipv4-router-id?           inet:ipv4-address {ipv4-router-id}?
+         +--rw ipv6-router-id?           inet:ipv6-address {ipv6-router-id}?
+         +--rw reference-bandwidth?      uint32 {reference-bandwidth}?
+         +--rw lsp-mtu?                  uint16
+         +--rw lsp-lifetime?             uint16
+         +--rw lsp-refresh?              uint16 {lsp-refresh}?
          +--rw graceful-restart {graceful-restart}?
          |  +--rw restart-duration?   uint16
          |  +--rw helper-disable?     empty
          |  +--rw enabled?            boolean
-         +--rw psnp-authentication* [level]
-         |  +--rw value?   boolean
-         |  +--rw level    level
-         +--rw csnp-authentication* [level]
-         |  +--rw value?   boolean
-         |  +--rw level    level
-         +--rw authentication-key* [level]
-         |  +--rw value?   string
-         |  +--rw level    level
-         +--rw authentication-type* [level]
-         |  +--rw value?   authentication-type
+         +--rw authentication* [level]
+         |  +--rw key?     boolean
+         |  +--rw type?    authentication-type
          |  +--rw level    level
          +--rw metric-type* [level]
          |  +--rw value?   enumeration
          |  +--rw level    level
          +--rw preference* [level]
-         |  +--rw value?   uint8
-         |  +--rw level    level
-         +--rw external-preference* [level]
-         |  +--rw value?   uint8
-         |  +--rw level    level
+         |  +--rw (granularity)?
+         |  |  +--:(detail)
+         |  |  |  +--rw internal?   uint8
+         |  |  |  +--rw external?   uint8
+         |  |  +--:(coarse)
+         |  |     +--rw default?    uint8
+         |  +--rw level       level
          +--rw default-metric* [level]
          |  +--rw value?   wide-metric
          |  +--rw level    level
@@ -65,7 +54,10 @@ augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol
          |  +--rw name       rt:rib-ref
          +--rw overload* [level]
          |  +--rw status?    boolean
-         |  +--rw type?      enumeration
+         |  +--rw timeout?   uint16
+         |  +--rw level      level
+         +--rw overload-max-metric* [level] {overload-max-metric}?
+         |  +--rw status?    boolean
          |  +--rw timeout?   uint16
          |  +--rw level      level
          +--rw interfaces
@@ -76,8 +68,7 @@ augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol
                +--rw lsp-retransmit-interval?   uint16
                +--rw passive?                   boolean
                +--rw csnp-interval?             uint16
-               +--rw three-way-handshake?       boolean
-               +--rw hello-padding?             boolean
+               +--rw hello-padding-disable?     empty
                +--rw mesh-group-enabled?        mesh-group-state
                +--rw mesh-group?                uint8
                +--rw interface-type?            interface-type
@@ -97,11 +88,12 @@ augment /rt:routing/rt:routing-instance/rt:routing-protocols/rt:routing-protocol
                +--rw priority* [level]
                |  +--rw value?   uint8
                |  +--rw level    level
+               +--rw metric* [level]
+               |  +--rw value?   wide-metric
+               |  +--rw level    level
                +--rw af* [af]
                |  +--rw af             string
                |  +--rw bfd-enabled?   empty
-               |  +--rw metric* [level]
-               |        ...
                +--rw topologies* [name]
                   +--rw name      rt:rib-ref
                   +--rw metric* [level]
