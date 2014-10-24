@@ -46,8 +46,20 @@ module ietf-isis {
 	description 
 		"The YANG module defines a generic configuration model for 
 		ISIS common across all of the vendor implementations.";
-	
-	revision 2017-10-21 {
+
+	revision 2014-10-24 {
+		description
+			"
+				* Change hello-padding to container
+				* Change bfd to container
+				* Make BFD a feature
+				* Creates mpls-te container and put router-id
+				inside
+				* Remove GR helper disable and timers
+			";
+		reference "draft-ietf-isis-yang-isis-cfg-01";
+	}
+	revision 2014-10-21 {
 		description
 			"
 			 * Interface metric move from af container to interface 
@@ -183,6 +195,10 @@ module ietf-isis {
 		  adjacency reset action.";
 	}
 	
+	feature bfd {
+		description
+			"Support of BFD.";
+	}
 	feature overload-max-metric {
 		description
 			"Support of overload by setting
@@ -1176,18 +1192,23 @@ module ietf-isis {
 					 protocol instance.";
 				}
 				
-				
-				leaf ipv4-router-id {
-					if-feature ipv4-router-id;
-					type inet:ipv4-address;
-					description 
-					 "Router ID value that would be used in TLV 134.";
-				}
-				leaf ipv6-router-id {
-					if-feature ipv6-router-id;
-					type inet:ipv6-address;
-					description 
-					 "Router ID value that would be used in TLV 140.";
+				container mpls-te {
+					leaf ipv4-router-id {
+						if-feature ipv4-router-id;
+						type inet:ipv4-address;
+						description 
+						 "Router ID value that would be used in 
+						 TLV 134.";
+					}
+					leaf ipv6-router-id {
+						if-feature ipv6-router-id;
+						type inet:ipv6-address;
+						description 
+						 "Router ID value that would be used in 
+						 TLV 140.";
+					}
+					description
+						"This container handles mpls te config.";
 				}
 				leaf reference-bandwidth {
 					if-feature reference-bandwidth;
@@ -1224,18 +1245,6 @@ module ietf-isis {
 				
 				container graceful-restart {
 					if-feature graceful-restart;
-					leaf restart-duration {
-						type uint16;
-						units seconds;
-						description 
-						 "Defines the restart duration in seconds.";
-					}
-					leaf helper-disable {
-						type empty;
-						description
-						 "If the leaf exists, helper capacity
-						 is disabled.";
-					}
 					leaf enabled {
 						type boolean;
 						description
@@ -1249,11 +1258,10 @@ module ietf-isis {
 					key level;
 					
 					leaf key {
-						type boolean;
-						default "true";
+						type string;
 						description
-						 "This leaf describes if ISIS messages must be
-						 authenticated.";
+						 "This leaf describes the
+						 authentication key.";	
 					}
 					leaf type {
 						type authentication-type;
@@ -1267,7 +1275,8 @@ module ietf-isis {
 							"Level applicability.";
 					}
 					description
-					 "Container for ISIS authentication.";
+					 "Container for ISIS authentication. 
+					  It covers both LSPs and SNPs.";
 				}
 				
 
@@ -1380,25 +1389,10 @@ module ietf-isis {
 							"Describes the activation state of the 
 							 AF.";
 					}
-
-					list default-metric {
-						key level;
-						
-						leaf value {
-							type wide-metric;
-							description
-								"Value of the metric";
-						}
-						leaf level {
-							type level;
-							description
-								"Level applicability of the metric.";
-						}
-						description
-						 "Defines the metric to be used by default.";
-					}
-					description 
-						"List of address families supported";
+					description
+					 "This list permits activation
+					 of new address families.";
+					
 				}
 				
 				
@@ -1415,6 +1409,22 @@ module ietf-isis {
 					leaf name {
 						type rt:rib-ref;
 						description "RIB";					
+					}
+					list default-metric {
+						key level;
+						
+						leaf value {
+							type wide-metric;
+							description
+								"Value of the metric";
+						}
+						leaf level {
+							type level;
+							description
+								"Level applicability of the metric.";
+						}
+						description
+						 "Defines the metric to be used by default.";
 					}
 					description
 						"List of topologies";
@@ -1521,10 +1531,19 @@ module ietf-isis {
 							  messages.";
 						}
 	
-						leaf hello-padding-disable {
-							type empty;
+						container hello-padding {
+							leaf enabled {
+								type boolean;
+								default "true";
+								description
+								 "Status of Hello-padding activation.
+								  By default, the implementation shall
+								  pad HELLOs.";
+							}
+							
 							description 
-							 "This leaf disables ISIS hello padding.";
+							 "This container handles ISIS hello padding
+							  configuration.";
 						}
 						
 						leaf mesh-group-enabled {
@@ -1706,11 +1725,18 @@ module ietf-isis {
 								description 
 									"Address-family"; 
 							}
-							leaf bfd-enabled {
-								type empty;
+							container bfd {
+								if-feature bfd;
+								leaf enabled {
+									type boolean;
+									default false;
+									description
+									 "This leaf enables BFD.";
+								}
+								
 								description
-									"If the leaf is present, 
-									 BFD is enabled.";
+									"The container describes 
+									 BFD config.";
 							}
 							
 							description
