@@ -47,6 +47,16 @@ module ietf-isis {
 		"The YANG module defines a generic configuration model for 
 		ISIS common across all of the vendor implementations.";
 
+	revision 2014-12-15 {
+		description
+			"
+				* Adding IPFRR
+				* Adding igp-ldp sync	
+				* Adding segment routing
+				* Adding instance reference to operational states.
+			";
+		reference "";
+	}
 	revision 2014-10-24 {
 		description
 			"
@@ -194,7 +204,23 @@ module ietf-isis {
 		description "Identity for the ISIS routing protocol 
 		  adjacency reset action.";
 	}
-	
+
+	feature igp-ldp-sync {
+		description
+			"Support of RFC5443.";
+	}
+	feature	lfa {
+		description
+			"Support of Loop Free Alternates.";
+	}
+	feature remote-lfa {
+		description
+			"Support of remote Loop Free Alternates.";
+	}
+	feature segment-routing {
+		description
+			"Support of Segment Routing.";
+	}	
 	feature bfd {
 		description
 			"Support of BFD.";
@@ -1253,7 +1279,40 @@ module ietf-isis {
 					description
 					 "This container activates graceful restart.";
 				}
-				
+			
+				container fast-reroute {
+					description
+						"This container needs to be
+						augmented with global parameters
+						for IPFRR.";
+				}
+				container segment-routing {
+					if-feature segment-routing;
+					leaf transport-type {
+						type enumeration {
+							enum "mpls";
+						}
+						description "Dataplane to be used.";	
+					}
+					list srgb {
+						key "lower-bound upper-bound";
+						leaf lower-bound {
+							type uint32;
+							description
+							"Lower value in the block.";	
+						}
+						leaf upper-bound {
+							type uint32;
+							description
+							"Upper value in the block.";	
+						}
+						description
+							"List of global blocks to be 
+						         advertised.";	
+					}	
+					description
+					"segment routing global config.";	
+				}	
 				list authentication {
 					key level;
 					
@@ -1725,6 +1784,43 @@ module ietf-isis {
 								description 
 									"Address-family"; 
 							}
+							container segment-routing {
+								if-feature segment-routing;
+								list prefix-sid {
+									key index;	
+									leaf index {
+										type uint32;
+										description
+										"Index associated with 
+										prefix.";
+	
+									}										
+									leaf node-flag {
+										type boolean;
+										default true;
+										description
+										"Set prefix as a node 
+										 representative prefix.";											
+									}
+									leaf explicit-null {
+										type boolean;
+										description	
+										 "Force explicit NULL
+										 forwarding for this SID.";
+									}
+									leaf php {
+										type boolean;
+										description	
+										 "Activates PHP for this 
+										  SID.";
+									}
+									description
+									"List of prefix-SID associated with 
+									 the interface.";	
+								}	
+								description
+								 "Segment routing interface configuration.";
+							}	
 							container bfd {
 								if-feature bfd;
 								leaf enabled {
@@ -1770,10 +1866,49 @@ module ietf-isis {
 							description
 							 "List of topologies.";
 						}
-				
+						container fast-reroute {
+							container lfa {
+								if-feature lfa;
+								leaf candidate-disabled {
+									type boolean;
+									description
+									 "Prevent the interface to be used as backup.";
+								}
+								leaf enabled {
+									type boolean;
+									description
+									 "Activates LFA.";
+								}	
+								container remote-lfa {
+									if-feature remote-lfa;
+									leaf enabled {
+										type boolean;
+										description
+										"Activates rLFA.";
+									}
+									description
+									 "remote LFA configuration.";	
+								}
+								description
+								 "LFA configuration.";
+							}
+							description
+							 "Fast-reroute configuration.";	
+						}	
 						description
 						 "List of ISIS interfaces.";
 					}
+					container igp-ldp-sync {
+						if-feature igp-ldp-sync;
+						leaf holdtime {
+							type uint16;
+							description
+							 "Time to wait in sec for LDP session setup.";
+						}
+						description
+						 "IGP-LDP sync configuration.";	
+					}
+						
 					description
 					 "This container defines ISIS interface specific 
 					 configuration objects.";
@@ -1799,634 +1934,652 @@ module ietf-isis {
 		  specific parameters.";
 		container isis {
 			config false;
-			container system-counters {
-				list level {
-					key level;
-					
-					leaf level {
-						type level-number;
-						description
-						 "This leaf describes the ISIS level.";
-					}
-					leaf corrupted-lsps {
-						type uint32;
-						description
-						 "Number of corrupted in-memory LSPs detected.
-						 LSPs received from the wire with a bad
-						 checksum are silently dropped and not counted.
-						 LSPs received from the wire with parse errors
-						 are counted by lsp-errors.";
-					}
-					leaf authentication-type-fails {
-						type uint32;
-						description
-						 "Number of authentication type mismatches.";
-					}
-					leaf authentication-fails {
-						type uint32;
-						description
-						 "Number of authentication key failures.";
-					}
-					leaf database-overload {
-						type uint32;
-						description
-						 "Number of times the database has become
-						 overloaded.";
-					}
-					leaf own-lsp-purge {
-						type uint32;
-						description
-						 "Number of times a zero-aged copy of the
-						 system's own LSP is received from some
-						 other node.";
-					}
-					leaf manual-address-drop-from-area {
-						type uint32;
-						description
-						 "Number of times a manual address
-						  has been dropped from the area.";
-					}
-					leaf max-sequence {
-						type uint32;
-						description
-						 "Number of times the system has attempted 
-						  to exceed the maximum sequence number.";
-					}
-					leaf sequence-number-skipped {
-						type uint32;
-						description
-						 "Number of times a sequence number skip has
-						 occured.";
-					}
-					leaf id-len-mismatch {
-						type uint32;
-						description
-						 "Number of times a PDU is received with
-						  a different value for ID field length
-						  from that of the receiving system.";
-					}
-					leaf partition-changes {
-						type uint32;
-						description
-						 "Number of partition changes detected.";
-					}
-					leaf lsp-errors {
-						type uint32;
-						description
-						 "Number of LSPs with errors we have 
-						 received.";
-					}
-					leaf spf-runs {
-						type uint32;
-						description
-						 "Number of times we ran SPF at this level.";
-					}
-					description
-					 "List of supported levels.";
-				}
-				description
-				 "The container defines a list of counters
-				  for the IS.";
-			}
-			container interface-counters {
-				list interface {
-					key interface;
-					
-					leaf interface {
-						type string;
-						description
-						 "This leaf describes the name
-						 of the interface.";
-					}
-					
-					leaf adjacency-changes {
-						type uint32;
-						description
-						 "The number of times an adjacency state
-						  change has occured on this interface.";
-					}
-					leaf adjacency-number {
-						type uint32;
-						description
-						 "The number of adjacencies on this 
-						  interface.";
-					}
-					leaf init-fails {
-						type uint32;
-						description
-						 "The number of times initialization of
-						  this interface has failed. This counts
-						  events such as PPP NCP failures.
-						  Failures to form an adjacency are counted
-						  by adjacency-rejects.";
-					}
-					leaf adjacency-rejects {
-						type uint32;
-						description
-						 "The number of times an adjacency has been
-						  rejected on this interface.";
-					}
-					leaf id-len-mismatch {
-						type uint32;
-						description
-						 "The number of times an IS-IS PDU with an ID
-						  field length different from that for this
-						  system has been received on this interface.";
-					}
-					leaf max-area-addresses-mismatch {
-						type uint32;
-						description
-						 "The number of times an IS-IS PDU with 
-						  according max area address field 
-						  differs from that for
-						  this system has been received on this 
-						  interface.";
-					}
-					leaf authentication-type-fails {
-						type uint32;
-						description
-						 "Number of authentication type mismatches.";
-					}
-					leaf authentication-fails {
-						type uint32;
-						description
-						 "Number of authentication key failures.";
-					}
-					leaf lan-dis-changes {
-						type uint32;
-						description
-						 "The number of times the DIS has changed
-						  on this interface at this level.
-						  If the interface type is point to point,
-						  the count is zero.";
-					}
-					description
-					 "List of interfaces.";
-				}
-				description
-				 "The container defines a list of counters
-				  for interfaces.";
-			}
-			container packet-counters {
-				list level {
-					key level;
-					
-					leaf level {
-						type level-number;
-						description
-						 "This leaf describes the ISIS level.";
-					}
-					
-					container iih {
-						leaf in {
-							type uint32;
-							description
-							 "Received PDUs.";
-						}
-						leaf out {
-							type uint32;
-							description
-							 "Sent PDUs.";
-						}
-						description
-						 "The number of IIH PDUs received/sent.";
-					}
-					container ish {
-						leaf in {
-							type uint32;
-							description
-							 "Received PDUs.";
-						}
-						leaf out {
-							type uint32;
-							description
-							 "Sent PDUs.";
-						}
-						description
-						 "The number of ISH PDUs received/sent.";
-					}
-					container esh {
-						leaf in {
-							type uint32;
-							description
-							 "Received PDUs.";
-						}
-						leaf out {
-							type uint32;
-							description
-							 "Sent PDUs.";
-						}
-						description
-						 "The number of ESH PDUs received/sent.";
-					}
-					container lsp {
-						leaf in {
-							type uint32;
-							description
-							 "Received PDUs.";
-						}
-						leaf out {
-							type uint32;
-							description
-							 "Sent PDUs.";
-						}
-						description
-						 "The number of LSP PDUs received/sent.";
-					}
-					container psnp {
-						leaf in {
-							type uint32;
-							description
-							 "Received PDUs.";
-						}
-						leaf out {
-							type uint32;
-							description
-							 "Sent PDUs.";
-						}
-						description
-						 "The number of PSNP PDUs received/sent.";
-					}
-					container csnp {
-						leaf in {
-							type uint32;
-							description
-							 "Received PDUs.";
-						}
-						leaf out {
-							type uint32;
-							description
-							 "Sent PDUs.";
-						}
-						description
-						 "The number of CSNP PDUs received/sent.";
-					}
-					container unknown {
-						leaf in {
-							type uint32;
-							description
-							 "Received PDUs.";
-						}
-						leaf out {
-							type uint32;
-							description
-							 "Sent PDUs.";
-						}
-						description
-						 "The number of unknown PDUs received/sent.";
-					}
-					description
-					 "List of supported levels.";
-				}
-				description
-				 "The container defines a list of PDU counters.";
-			}
-			container interfaces {
-				list interfaces {
-					key interface;
-					
-					leaf interface {
-						type string;
-						description
-						 "This leaf describes the name
-						 of the interface.";
-					}
-					leaf circuit-id {
-						type circuit-id;
-						description 
-						 "This leaf describes the circuit-id
-						 associated with the interface.";
-					}
-					leaf admin-state {
-						type admin-state;
-						description
-						"This leaf describes the admin state
-						of the interface.";
-					}
-					leaf oper-state {
-						type oper-state;
-						description
-						"This leaf describes the operational state
-						of the interface.";
-					}
-					leaf interface-type {
-						type interface-type;
-						description
-						"Type of interface to be used.";
-					}
-					leaf level {
-						type level;
-						description
-						"Level associated with the interface.";
-					}
-					leaf passive {
-						type empty;
-						description
-						 "The interface is included in LSP, but 
-						 does not run ISIS protocol.";
-					}
-					leaf three-way-handshake {
-						type empty;
-						description
-						 "The interface uses 3-way handshake.";
-					}
-					description
-					 "List of interfaces.";
-				}
-				description
-				 "The container defines operational parameters 
-				  of interfaces.";
-			}
-			container adjacencies {			
-				list adjacency {
-					leaf interface {
-						type string;
-						description
-						 "This leaf describes the name
-						 of the interface.";
-					}
-					leaf level {
-						type level;
-						description 
-							"This leaf describes the associated 
-							ISIS level of the interface.
-							";
-					}
-					leaf neighbor-sysid {
-						type system-id;
-						description
-						 "The system-id of the neighbor";
-						 
-					}
-					leaf neighbor-extended-circuit-id {
-						type extended-circuit-id;
-						description
-						 "Circuit ID of the neighbor";
-					}
-					leaf neighbor-snpa {
-						type snpa;
-						description
-						 "SNPA of the neighbor";
-					}
-					leaf neighbor-level {
-						type level;
-						description
-						"The type of the neighboring system.";
-					}
-					leaf hold-timer {
-						type uint16;
-						description
-						 "The holding time in seconds for this
-						  adjacency. This value is based on
-						  received hello PDUs and the elapsed
-						  time since receipt.";
-					}
-					leaf neighbor-priority {
-						type uint8 {
-							range "0 .. 127";
-						}
-						description
-						 "Priority of the neighboring IS for becoming
-						  the DIS.";
-					}
-					leaf lastuptime {
-						type yang:timestamp;
-						description
-						 "When the adjacency most recently entered
-						  state 'up', measured in hundredths of a 
-						  second since the last reinitialization of
-						  the network management subsystem.
-						  The value is 0 if the adjacency has never
-						  been in state 'up'.";
-						
-					}
-					leaf state {
-						type enumeration {
-							enum "Up" {
-								description
-								 "This state describes that
- 								  adjacency is established.";
-							}
-							enum "Down" {
-								description
-								 "This state describes that
- 								  adjacency is NOT established.";
-							}
-							enum "Init" {
-								description
-								 "This state describes that
- 								  adjacency is establishing.";
-							}
-						}
-						description
-						 "This leaf describes the state of the
-						 interface.";
-					}
-					description
-					 "List of operational adjacencies.";
-				}
-				description 
-				 "This container lists the adjacencies of 
-				 the local node.";
-			}
-			container spf-log {
-				list event {
-					key id;
-					
-					leaf id {
-						type uint32;
-						description
-						 "This leaf defines the event identifier.
-						  This is a purely internal value.";
-					}
-					leaf spf-type {
-						type enumeration {
-							enum full {
-								description
-								 "Computation done is a Full SPF.";
-							}
-							enum incremental {
-								description
-								 "Computation done is an 
-								  incremental SPF.";
-							}
-							enum route-only {
-								description
-								 "Computation done is a 
-								  reachability computation
-								  only.";
-							}
-						}
-						description
-						 "This leaf describes the type of computation
-						 used.";
-					}
-					leaf level {
-						type level-number;
-						description
-						 "This leaf describes the level affected by the
-						 the computation.";
-					}
-					leaf spf-delay {
-						type uint32;
-						units "milliseconds";
-						description 
-						 "This leaf describes the SPF delay that 
-						 was used for this event.";
-					}
-					leaf schedule-timestamp {
-						type yang:timestamp;
-						description
-						 "This leaf describes the timestamp
-						  when the computation was scheduled.";
-					}
-					leaf start-timestamp {
-						type yang:timestamp;
-						description
-						 "This leaf describes the timestamp
-						  when the computation was started.";	
-					}
-					leaf end-timestamp {
-						type yang:timestamp;
-						description
-						 "This leaf describes the timestamp
-						  when the computation was ended.";
-					}
-					list trigger-lsp {
-						key "lsp";
-						leaf lsp {
-							type lsp-id;
-							description
-							 "This leaf describes the LSPID 
-							  of the LSP.";
-						}
-						leaf sequence {
-							type uint32;
-							description
-							 "This leaf describes the sequence 
-							  number of the LSP.";
-						}
-						description
-						 "This leaf describes list of LSPs
-						  that triggered the computation.";
-					}
-					description
-					 "List of computation events.";
-				}
+			list instance {
+
+				key routing-instance;
 				
-				description 
-				 "This container lists the SPF computation events.";
-			}
-			container lsp-log {
-				list event {
-					key id;
-					
-					leaf id {
-						type uint32;
+				leaf routing-instance {
+					type rt:routing-instance-ref;
+					  description 
+						"Reference routing instance. 
+						For protocol centric model, which is
+						supported in 
+						default-instance only, this could reference 
+						any VRF routing-instance.
+						For VRF centric model, must reference the 
+						enclosing routing-instance.";
+				}
+				container system-counters {
+					list level {
+						key level;
+						
+						leaf level {
+							type level-number;
+							description
+							 "This leaf describes the ISIS level.";
+						}
+						leaf corrupted-lsps {
+							type uint32;
+							description
+							 "Number of corrupted in-memory LSPs detected.
+							 LSPs received from the wire with a bad
+							 checksum are silently dropped and not counted.
+							 LSPs received from the wire with parse errors
+							 are counted by lsp-errors.";
+						}
+						leaf authentication-type-fails {
+							type uint32;
+							description
+							 "Number of authentication type mismatches.";
+						}
+						leaf authentication-fails {
+							type uint32;
+							description
+							 "Number of authentication key failures.";
+						}
+						leaf database-overload {
+							type uint32;
+							description
+							 "Number of times the database has become
+							 overloaded.";
+						}
+						leaf own-lsp-purge {
+							type uint32;
+							description
+							 "Number of times a zero-aged copy of the
+							 system's own LSP is received from some
+							 other node.";
+						}
+						leaf manual-address-drop-from-area {
+							type uint32;
+							description
+							 "Number of times a manual address
+							  has been dropped from the area.";
+						}
+						leaf max-sequence {
+							type uint32;
+							description
+							 "Number of times the system has attempted 
+							  to exceed the maximum sequence number.";
+						}
+						leaf sequence-number-skipped {
+							type uint32;
+							description
+							 "Number of times a sequence number skip has
+							 occured.";
+						}
+						leaf id-len-mismatch {
+							type uint32;
+							description
+							 "Number of times a PDU is received with
+							  a different value for ID field length
+							  from that of the receiving system.";
+						}
+						leaf partition-changes {
+							type uint32;
+							description
+							 "Number of partition changes detected.";
+						}
+						leaf lsp-errors {
+							type uint32;
+							description
+							 "Number of LSPs with errors we have 
+							 received.";
+						}
+						leaf spf-runs {
+							type uint32;
+							description
+							 "Number of times we ran SPF at this level.";
+						}
 						description
-						 "This leaf defines the event identifier.
-						  This is a purely internal value.";
+						 "List of supported levels.";
 					}
-					leaf level {
-						type level-number;
+					description
+					 "The container defines a list of counters
+					  for the IS.";
+				}
+				container interface-counters {
+					list interface {
+						key interface;
+						
+						leaf interface {
+							type string;
+							description
+							 "This leaf describes the name
+							 of the interface.";
+						}
+						
+						leaf adjacency-changes {
+							type uint32;
+							description
+							 "The number of times an adjacency state
+							  change has occured on this interface.";
+						}
+						leaf adjacency-number {
+							type uint32;
+							description
+							 "The number of adjacencies on this 
+							  interface.";
+						}
+						leaf init-fails {
+							type uint32;
+							description
+							 "The number of times initialization of
+							  this interface has failed. This counts
+							  events such as PPP NCP failures.
+							  Failures to form an adjacency are counted
+							  by adjacency-rejects.";
+						}
+						leaf adjacency-rejects {
+							type uint32;
+							description
+							 "The number of times an adjacency has been
+							  rejected on this interface.";
+						}
+						leaf id-len-mismatch {
+							type uint32;
+							description
+							 "The number of times an IS-IS PDU with an ID
+							  field length different from that for this
+							  system has been received on this interface.";
+						}
+						leaf max-area-addresses-mismatch {
+							type uint32;
+							description
+							 "The number of times an IS-IS PDU with 
+							  according max area address field 
+							  differs from that for
+							  this system has been received on this 
+							  interface.";
+						}
+						leaf authentication-type-fails {
+							type uint32;
+							description
+							 "Number of authentication type mismatches.";
+						}
+						leaf authentication-fails {
+							type uint32;
+							description
+							 "Number of authentication key failures.";
+						}
+						leaf lan-dis-changes {
+							type uint32;
+							description
+							 "The number of times the DIS has changed
+							  on this interface at this level.
+							  If the interface type is point to point,
+							  the count is zero.";
+						}
 						description
-						 "This leaf describes the level affected by the
-						 the computation.";
+						 "List of interfaces.";
 					}
-					container lsp {
-						leaf lsp {
+					description
+					 "The container defines a list of counters
+					  for interfaces.";
+				}
+				container packet-counters {
+					list level {
+						key level;
+						
+						leaf level {
+							type level-number;
+							description
+							 "This leaf describes the ISIS level.";
+						}
+						
+						container iih {
+							leaf in {
+								type uint32;
+								description
+								 "Received PDUs.";
+							}
+							leaf out {
+								type uint32;
+								description
+								 "Sent PDUs.";
+							}
+							description
+							 "The number of IIH PDUs received/sent.";
+						}
+						container ish {
+							leaf in {
+								type uint32;
+								description
+								 "Received PDUs.";
+							}
+							leaf out {
+								type uint32;
+								description
+								 "Sent PDUs.";
+							}
+							description
+							 "The number of ISH PDUs received/sent.";
+						}
+						container esh {
+							leaf in {
+								type uint32;
+								description
+								 "Received PDUs.";
+							}
+							leaf out {
+								type uint32;
+								description
+								 "Sent PDUs.";
+							}
+							description
+							 "The number of ESH PDUs received/sent.";
+						}
+						container lsp {
+							leaf in {
+								type uint32;
+								description
+								 "Received PDUs.";
+							}
+							leaf out {
+								type uint32;
+								description
+								 "Sent PDUs.";
+							}
+							description
+							 "The number of LSP PDUs received/sent.";
+						}
+						container psnp {
+							leaf in {
+								type uint32;
+								description
+								 "Received PDUs.";
+							}
+							leaf out {
+								type uint32;
+								description
+								 "Sent PDUs.";
+							}
+							description
+							 "The number of PSNP PDUs received/sent.";
+						}
+						container csnp {
+							leaf in {
+								type uint32;
+								description
+								 "Received PDUs.";
+							}
+							leaf out {
+								type uint32;
+								description
+								 "Sent PDUs.";
+							}
+							description
+							 "The number of CSNP PDUs received/sent.";
+						}
+						container unknown {
+							leaf in {
+								type uint32;
+								description
+								 "Received PDUs.";
+							}
+							leaf out {
+								type uint32;
+								description
+								 "Sent PDUs.";
+							}
+							description
+							 "The number of unknown PDUs received/sent.";
+						}
+						description
+						 "List of supported levels.";
+					}
+					description
+					 "The container defines a list of PDU counters.";
+				}
+				container interfaces {
+					list interfaces {
+						key interface;
+						
+						leaf interface {
+							type string;
+							description
+							 "This leaf describes the name
+							 of the interface.";
+						}
+						leaf circuit-id {
+							type circuit-id;
+							description 
+							 "This leaf describes the circuit-id
+							 associated with the interface.";
+						}
+						leaf admin-state {
+							type admin-state;
+							description
+							"This leaf describes the admin state
+							of the interface.";
+						}
+						leaf oper-state {
+							type oper-state;
+							description
+							"This leaf describes the operational state
+							of the interface.";
+						}
+						leaf interface-type {
+							type interface-type;
+							description
+							"Type of interface to be used.";
+						}
+						leaf level {
+							type level;
+							description
+							"Level associated with the interface.";
+						}
+						leaf passive {
+							type empty;
+							description
+							 "The interface is included in LSP, but 
+							 does not run ISIS protocol.";
+						}
+						leaf three-way-handshake {
+							type empty;
+							description
+							 "The interface uses 3-way handshake.";
+						}
+						description
+						 "List of interfaces.";
+					}
+					description
+					 "The container defines operational parameters 
+					  of interfaces.";
+				}
+				container adjacencies {			
+					list adjacency {
+						leaf interface {
+							type string;
+							description
+							 "This leaf describes the name
+							 of the interface.";
+						}
+						leaf level {
+							type level;
+							description 
+								"This leaf describes the associated 
+								ISIS level of the interface.
+								";
+						}
+						leaf neighbor-sysid {
+							type system-id;
+							description
+							 "The system-id of the neighbor";
+							 
+						}
+						leaf neighbor-extended-circuit-id {
+							type extended-circuit-id;
+							description
+							 "Circuit ID of the neighbor";
+						}
+						leaf neighbor-snpa {
+							type snpa;
+							description
+							 "SNPA of the neighbor";
+						}
+						leaf neighbor-level {
+							type level;
+							description
+							"The type of the neighboring system.";
+						}
+						leaf hold-timer {
+							type uint16;
+							description
+							 "The holding time in seconds for this
+							  adjacency. This value is based on
+							  received hello PDUs and the elapsed
+							  time since receipt.";
+						}
+						leaf neighbor-priority {
+							type uint8 {
+								range "0 .. 127";
+							}
+							description
+							 "Priority of the neighboring IS for becoming
+							  the DIS.";
+						}
+						leaf lastuptime {
+							type yang:timestamp;
+							description
+							 "When the adjacency most recently entered
+							  state 'up', measured in hundredths of a 
+							  second since the last reinitialization of
+							  the network management subsystem.
+							  The value is 0 if the adjacency has never
+							  been in state 'up'.";
 							
-							type lsp-id;
-							description
-							 "This leaf describes the LSPID 
-							  of the LSP.";
 						}
-						leaf sequence {
+						leaf state {
+							type enumeration {
+								enum "Up" {
+									description
+									 "This state describes that
+									  adjacency is established.";
+								}
+								enum "Down" {
+									description
+									 "This state describes that
+									  adjacency is NOT established.";
+								}
+								enum "Init" {
+									description
+									 "This state describes that
+									  adjacency is establishing.";
+								}
+							}
+							description
+							 "This leaf describes the state of the
+							 interface.";
+						}
+						description
+						 "List of operational adjacencies.";
+					}
+					description 
+					 "This container lists the adjacencies of 
+					 the local node.";
+				}
+				container spf-log {
+					list event {
+						key id;
+						
+						leaf id {
 							type uint32;
 							description
-							 "This leaf describes the sequence 
-							  number of the LSP.";
+							 "This leaf defines the event identifier.
+							  This is a purely internal value.";
+						}
+						leaf spf-type {
+							type enumeration {
+								enum full {
+									description
+									 "Computation done is a Full SPF.";
+								}
+								enum incremental {
+									description
+									 "Computation done is an 
+									  incremental SPF.";
+								}
+								enum route-only {
+									description
+									 "Computation done is a 
+									  reachability computation
+									  only.";
+								}
+							}
+							description
+							 "This leaf describes the type of computation
+							 used.";
+						}
+						leaf level {
+							type level-number;
+							description
+							 "This leaf describes the level affected by the
+							 the computation.";
+						}
+						leaf spf-delay {
+							type uint32;
+							units "milliseconds";
+							description 
+							 "This leaf describes the SPF delay that 
+							 was used for this event.";
+						}
+						leaf schedule-timestamp {
+							type yang:timestamp;
+							description
+							 "This leaf describes the timestamp
+							  when the computation was scheduled.";
+						}
+						leaf start-timestamp {
+							type yang:timestamp;
+							description
+							 "This leaf describes the timestamp
+							  when the computation was started.";	
+						}
+						leaf end-timestamp {
+							type yang:timestamp;
+							description
+							 "This leaf describes the timestamp
+							  when the computation was ended.";
+						}
+						list trigger-lsp {
+							key "lsp";
+							leaf lsp {
+								type lsp-id;
+								description
+								 "This leaf describes the LSPID 
+								  of the LSP.";
+							}
+							leaf sequence {
+								type uint32;
+								description
+								 "This leaf describes the sequence 
+								  number of the LSP.";
+							}
+							description
+							 "This leaf describes list of LSPs
+							  that triggered the computation.";
 						}
 						description
-						 "This container describes the received LSP
-						 , in case of local LSP update the local
-						 LSP ID is referenced.";
-					}
-					
-					leaf received-timestamp {
-						type yang:timestamp;
-						
-						description
-						 "This leaf describes the timestamp
-						 when the LSP was received. In case of
-						 local LSP update, the timestamp refers
-						 to the local LSP update time.";
-					}
-					
-					description
-					 "List of LSP events.";
-				}
-				
-				description 
-				 "This container lists the LSP reception events.
-				 Local LSP modification are also contained in the 
-				 list.";
-			}
-			container database {
-				list level-db {
-					key level;
-					
-					leaf level {
-						type level-number;
-						description
-						 "Current level number";
-					}
-					list lsp {
-						key lsp-id;
-						
-						uses database;
-						description
-						 "List of LSPs in LSDB.";
+						 "List of computation events.";
 					}
 					
 					description 
-					 "This container describes the list of LSPs
-					 in the level x database.";
+					 "This container lists the SPF computation events.";
 				}
-				
-				description 
-				 "This container describes ISIS Link State 
-				  databases.";
-			}
-			container hostnames {
-				
-				list hostname {
-					key system-id;
-					leaf system-id {
-						type system-id;
-						description
-						 "This leaf describes the system-id
-						 associated with the hostname.";
-					}
-					leaf hostname {
+				container lsp-log {
+					list event {
+						key id;
 						
-						type string;
+						leaf id {
+							type uint32;
+							description
+							 "This leaf defines the event identifier.
+							  This is a purely internal value.";
+						}
+						leaf level {
+							type level-number;
+							description
+							 "This leaf describes the level affected by the
+							 the computation.";
+						}
+						container lsp {
+							leaf lsp {
+								
+								type lsp-id;
+								description
+								 "This leaf describes the LSPID 
+								  of the LSP.";
+							}
+							leaf sequence {
+								type uint32;
+								description
+								 "This leaf describes the sequence 
+								  number of the LSP.";
+							}
+							description
+							 "This container describes the received LSP
+							 , in case of local LSP update the local
+							 LSP ID is referenced.";
+						}
+						
+						leaf received-timestamp {
+							type yang:timestamp;
+							
+							description
+							 "This leaf describes the timestamp
+							 when the LSP was received. In case of
+							 local LSP update, the timestamp refers
+							 to the local LSP update time.";
+						}
+						
 						description
-						 "This leaf describes the hostname
-						  associated with the system ID.";
+						 "List of LSP events.";
 					}
-					description
-					 "List of system-id/hostname associations";
+					
+					description 
+					 "This container lists the LSP reception events.
+					 Local LSP modification are also contained in the 
+					 list.";
+				}
+				container database {
+					list level-db {
+						key level;
+						
+						leaf level {
+							type level-number;
+							description
+							 "Current level number";
+						}
+						list lsp {
+							key lsp-id;
+							
+							uses database;
+							description
+							 "List of LSPs in LSDB.";
+						}
+						
+						description 
+						 "This container describes the list of LSPs
+						 in the level x database.";
+					}
+					
+					description 
+					 "This container describes ISIS Link State 
+					  databases.";
+				}
+				container hostnames {
+					
+					list hostname {
+						key system-id;
+						leaf system-id {
+							type system-id;
+							description
+							 "This leaf describes the system-id
+							 associated with the hostname.";
+						}
+						leaf hostname {
+							
+							type string;
+							description
+							 "This leaf describes the hostname
+							  associated with the system ID.";
+						}
+						description
+						 "List of system-id/hostname associations";
+					}
+					
+					description 
+					 "This container describes the list
+					 of binding between system-id and
+					 hostnames.";
 				}
 				
 				description 
-				 "This container describes the list
-				 of binding between system-id and
-				 hostnames.";
+				 "List of ISIS instances.";
 			}
-			
 			description 
-			 "This container defines various ISIS states objects.";
+				 "This container defines various ISIS states objects.";
 		}
 	}
 	
