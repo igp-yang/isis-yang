@@ -61,7 +61,7 @@
 
     <abstract>
       <t>This document defines a YANG data model that can be used to
-      configure and manage ISIS protocol.</t>
+      configure and manage ISIS protocol on network elements.</t>
     </abstract>
     <note title="Requirements Language">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
@@ -86,7 +86,7 @@
       </section>
     </section>
     <section anchor="design" title="Design of the Data Model">
-      <t>The ISIS YANG module is divided in two main containers "isis"
+      <t>The ISIS YANG module is divided in two main "isis" containers 
       that are augmenting the
       "routing-protocol" lists in ietf-routing module with specific
       ISIS parameters.</t>
@@ -96,19 +96,24 @@
       YANG module:</t>
 
       <figure>
-	&ietf-isis.tree;
+	&summary.tree;
       </figure>
 
       <section anchor="yang-isis-global" title="ISIS Configuration">
 	    <t>
 		The ISIS configuration currently supports both VRF-centric and
 		protocol-centric configuration. This may be changed in future.
+		</t>
+		<t>
 		In a protocol-centric configuration, the isis configuration
 		is applied within the standard-routing-instance and the instance list 
 		helps to reference the routing-instance where ISIS is activated.
-		In a VRF-centric configuration, the isis configuration is applied directly
-		within the appropriate routing-instance where ISIS is activated. In this case,
-		the instance list will contain a single element.
+		</t>
+		<t>
+		In a VRF-centric configuration, the isis configuration is applied 
+		directly within the appropriate routing-instance where ISIS 
+		is activated. 
+		In this case, the instance list will contain a single element.
 		</t>
         <t>The ISIS configuration container is divided in:
 	<list style="symbols">
@@ -116,12 +121,16 @@
 	  <t>Per interface configuration (see <xref
 	  target="yang-interface"/>).</t>
 	</list></t>
+		<t>It would to up to extension modules to augment this model to support
+		vendor specific parameters.</t>
       </section>
 
       <section anchor="yang-multitopology" title="Multitopology Parameters">
-        <t>The topologies list  is used to enable support of MT
+        <t>The "topologies" list  is used to enable support of MT
         extensions for specific address families.</t>
         <t>Each topology should refer to an existing RIB.</t>
+		<t>Some specific parameters could be defined for a specific topology
+		at global level and also at interface level.</t>
 
       </section>
 
@@ -136,19 +145,31 @@
         |  +--rw level    level
 		</artwork>
 		</figure>
+		<t>Example :</t>
+		<figure>
+		<artwork>
+        &lt;priority&gt;
+            &lt;value&gt;100&lt;/value&gt;
+			&lt;level&gt;level-1&lt;/level&gt;
+        &lt;/priority&gt;
+		&lt;priority&gt;
+            &lt;value&gt;200&lt;/value&gt;
+			&lt;level&gt;level-2&lt;/level&gt;
+        &lt;/priority&gt;
+		</artwork>
+		</figure>
       </section>
 
       <section anchor="yang-interface" title="Per-Interface Parameters">
         <t>The per-interface section of the ISIS instance describes
         the interface specific parameters.</t>
-		<t>The interface is referenced using a string. It would be up to the 
-		server device to check if the interface exists or not. Using a string
-		permits to support some specific implementations that use the "interface
-		all" stanza to apply a configuration to all interfaces.</t>
+		<t>The interface is a reference to an interface in the Interface YANG model.</t>
         <t>Each interface has interface-specific parameters that may have
 		a different value per level as described in previous section.
 		An interface-specific parameter always override an ISIS global
         parameter .</t>
+		<t>Some parameters like BFD and hello-padding are defined as containers
+		to permit easy extension by vendor specific modules.</t>
 
 	<figure>
 	    &interfaces.tree;
@@ -156,16 +177,36 @@
 
       </section>
 
+	   <section anchor="yang-iso" title="ISO parameters">
+	   <t>Some ISO parameters may be required.</t>
+	   <t>This module augments interface configuration model to support ISO configuration parameters.</t>
+	   <t>The clns-mtu can be defined under the interface.</t>
+	  </section>
+	  <section anchor="yang-frr" title="IP FRR">
+	  <t>
+	  This YANG model supports LFA and remote LFA as IP FRR techniques.
+	  The "fast-reroute" container may be augmented by other models to support other IPFRR flavors (MRT ...).
+	  </t>
+	  <t>
+	  The current version of the model supports activation of LFA and remote LFA at interface only.
+	  The global "lfa" container is present but kept empty to permit augmentation with vendor specific properties like policies.
+	  </t>
+	  <t>Remote LFA is considered as a child of LFA. Remote LFA cannot be enabled if LFA is not enabled.</t>
+	  <t>The "candidate-disabled" permit to mark an interface to not be used as a backup.</t>
+	  </section>
+	  
+	  <section anchor="yang-sr" title="Segment Routing">
+	  <t>
+	  This item is still under discussion and some part of the proposed configuration may fit in a segment-routing specific model.
+	  </t>
+	  </section>
+	  
       <section anchor="yang-op" title="Operational State">
         <t>"isis" container provides operational states for
         ISIS. This container is divided in multiple components:
 	<list style="symbols">
 		<t>system-counters : provides statistical informations about
 		the global system.</t>
-		<t>interface-counters : provides statistical informations for
-		each interface.</t>
-		<t>packet-counters : provides statistical informations for
-		each type of PDU.</t>
 		<t>interface : provides configuration state information for
 		each interface.</t>
 	  <t>adjacencies: provides state information about current
@@ -177,6 +218,8 @@
 	  <t>database: provides details on current LSDB.</t>
 	  <t>hostnames: provides information about system-id to
 	  hostname mappings.</t>
+	  <t>fast-reroute: provides information about IP FRR.</t>
+	  <t>segment-routing: provides information about segment-routing.</t>
 	</list></t>
       </section>
 
@@ -258,6 +301,9 @@
       "/rt:routing/rt:routing-instance/rt:routing-protocols/routing-protocol"
       container of the ietf-routing module by defining ISIS specific
       parameters.</t>
+	  <t>The "isis" module augments
+      "/if:interfaces/if:interface"
+      with ISO specific parameters.</t>
       <t>The "isis" operational state container augments the
       "/rt:routing-state/rt:routing-instance/rt:routing-protocols/routing-protocol"
       container of the ietf-routing module by defining ISIS specific
@@ -350,7 +396,7 @@
       defined in this document.  The example is written in XML.</t>
 
       <figure>
-	&example-get-reply.xml;
+	&example-get-config-reply.xml;
       </figure>
 
     </section>
