@@ -961,13 +961,6 @@ module ietf-isis {
       description
        "This leaf describes the type of ISIS route.";
     }
-    leaf segment-id {
-      if-feature segment-routing;
-      type uint32;
-      description
-       "Segment ID or MPLS label value 
-       used to reach the prefix.";
-    }
   }
   
   grouping fast-reroute-global-cfg {
