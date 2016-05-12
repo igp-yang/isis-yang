@@ -1,0 +1,519 @@
+module ietf-l3vpn-svc {
+	namespace "urn:ietf:params:xml:ns:yang:ietf-l3vpn-svc";
+	
+	prefix l3vpn-svc;
+	
+	import ietf-routing {
+            prefix "rt";
+        }
+
+	import ietf-inet-types {
+		prefix inet;
+	}
+	
+	import ietf-yang-types {
+		prefix yang;
+	}
+	
+	organization
+	 "IETF ISIS Working Group";
+	 
+	contact
+		"WG List:	&lt;mailto:@ietf.org&gt;
+		
+		Editor:		
+
+		";
+	
+	description 
+		"The YANG module defines a generic service configuration model for 
+		Layer 3 VPN common across all of the vendor implementations.";
+
+	
+	revision 2015-02-05 {
+		description "Initial revision.";
+		reference "draft-...";
+	}
+
+	identity management {
+		description
+		 "Base identity for site management scheme.";
+	}
+	identity comanaged {
+		base management;
+		description
+		 "Base identity for comanaged site.";	 
+	}
+	identity customer-managed {
+		base management;
+		description
+		 "Base identity for customer managed site.";	 
+	}
+	identity provider-managed {
+		base management;
+		description
+		 "Base identity for provider managed site.";	 
+	}
+
+	identity site-availability {
+		description
+		 "Base identity for site availability.";
+	}
+	identity loadsharing {
+			base site-availability;
+			description
+			 "Identity for loadsharing site.";
+	}
+	identity loadsharing-ibgp {
+			base loadsharing;
+			description
+			 "Identity for ECMP ibgp based loadsharing site.";
+	}
+	identity loadsharing-eibgp {
+			base loadsharing;
+			description
+			 "Identity for ECMP eibgp based loadsharing site.";
+	}
+	identity primary-backup {
+			base site-availability;
+			description
+			 "Identity for primary-backup site.";
+	}
+	identity single {
+			base site-availability;
+			description
+			 "Identity for single site.";
+	}
+	identity access-availability-type {
+		description
+		 "base identity for access-availability-type";
+	}
+	identity primary-access {
+		base access-availability-type;
+		description
+		 "Identity for primary access type.";
+	}
+	identity backup-access {
+		base access-availability-type;
+		description
+		 "Identity for backup access type.";
+	}
+	identity single-access {
+		base access-availability-type;
+		description
+		 "Identity for single access type.";
+	}
+	identity loadsharing-access {
+		base access-availability-type;
+		description
+		 "Identity for loadsharing access type.";
+	}
+	
+	container l3vpn-svc {
+		list vpn-svc {
+			key name;
+			
+			leaf name {
+				type string;
+				description
+				 "Name of the VPN.";
+			}
+			leaf id {
+				type uint32;
+				description
+				"VPN identifier. Local administration meaning.";
+			}
+			leaf customer-name {
+				type string;
+				description
+				 "Name of the customer.";
+			}
+			container cloud-access {
+				description
+				 "Cloud access configuration.";
+			}
+			container internet-access {
+				description
+				 "Internet access configuration.";
+			}
+			description "
+				List of VPN services.
+				";
+		}
+		
+		list vrf {
+			key id;
+			
+			leaf id {
+				type uint32;
+				description
+				 "ID of the VRF.";
+			}
+			
+			leaf name {
+				type string;
+				description
+				 "Name of the VRF.";
+			}	
+			
+			container route-distinguisher {
+				leaf allocation-policy {
+					type enumeration {
+						enum "per-site" {
+							description
+							 "Per site policy.";
+						}
+						enum "per-vpn" {
+							description
+							 "Per VPN policy.";
+						}
+					}
+					description
+					 "RD allocation policy.";
+				}
+				leaf type {
+					type enumeration {
+						enum "4byte-admin" {
+							description
+							 "4 bytes used for admin";
+						}
+						enum "2byte-admin" {
+							description
+							 "2 bytes used for admin";
+						}
+					}
+					description
+					 "Type of used RD.";
+				}
+				leaf route-distinguisher-number {
+					type uint32;
+					description
+					 "Define local assigned number part of the RD.";
+				}
+				description
+					"";
+			}
+			
+			container vpn-policy {
+				container import-policy {
+					
+					description 
+					 "Import policy.";
+				}
+				container export-policy {
+					
+					description 
+					 "Export policy.";
+				}
+				description
+				 "Define the VPN policy.";
+			}
+			
+			container maximum-routes {
+				list address-family {
+					key af;
+					
+					leaf af {
+						type identityref {
+							base rt:address-family;
+						}
+						description
+						 "Address-family.";
+					}
+					leaf maximum-routes {
+						type uint32;
+						description
+						 "Maximum prefixes the VRF can accept for this
+						 address-family.";
+					}
+					description
+					 "List of address families.";
+				}
+				description
+				 "Define maximum-routes for the VRF.";
+			}
+			
+			description
+			 "List of VRF.";
+		}
+		
+		list sites {
+			key site-id;
+			
+			leaf site-id {
+				type string;
+				description
+					"Identifier of the site.";
+			}
+			
+			container site-diversity {
+				leaf type {
+					type enumeration {
+						enum "PoP diverse" {
+							description
+							 "The access must use another PoP compared
+							 to other accesses in the same group.";
+						}
+						enum "PE diverse" {
+							description
+							 "The access must use another PE compared
+							 to other accesses in the same group.";
+						}
+					}
+					description
+					 "Diversity constraint type.";
+				}
+				leaf group {
+					type uint32;
+					description
+					 "Diversity group ID.";
+				}
+				description
+					 "Diversity constraint type.";
+			}
+			
+			leaf vpn {
+				type leafref {
+					path "../../vpn-svc/name";
+				}
+				description	
+					"Reference to associated VPN.";
+			}
+			
+			list routing-protocols {
+				key name;
+				leaf name {
+					type string;
+					description
+					 "Name of routing-protocol instance";
+				}
+				leaf type {
+					type identityref {
+						base rt:routing-protocol;
+					}
+					description
+					 "Type of routing protocol.";
+				}
+				leaf bfd-enabled {
+					type boolean;
+					description
+					 "BFD activation";
+				}
+				description
+				 "List of routing protocols used on the site. Need to be augmented.";
+			}
+			container security {
+				container authentication {
+					description
+					 "Authentication parameters";
+				}
+				container encryption {
+					description
+					 "Encryption parameters.";
+				}
+				container access-control-list {
+					description
+					 "Access control list.";
+				}
+				description
+				 "Site specific security parameters.";
+			}
+			
+			container availability {
+				container availability-type {
+					leaf service-type {
+						type identityref {
+							base site-availability;
+						}
+						description
+						 "Type of availability, ex : single, backup, loadsharing";
+					}
+					leaf access-type {
+						type identityref {
+							base access-availability-type;
+						}
+						description
+						 "Access type within the service.";
+					}
+					description
+						"Availability solution parameters";
+				}
+				leaf loadsharing-type {
+					type identityref {
+						base loadsharing;
+					}
+					description
+					 "Loadsharing flavor.";
+				}
+				description
+				 "Site availability parameters.";
+			}
+			container connection {
+				container bearer {
+					leaf type {
+						type string;
+						description
+						 "Type of bearer. Operator specific.";
+					}
+					description
+					 "Bearer specific parameters. To be augmented.";
+				}
+				list address-family {
+					key	af;
+					
+					leaf af {
+						type identityref {
+							base rt:address-family;
+						}
+						description
+						 "Address-family.";
+					}
+					leaf address-allocation-type {
+						type string;
+						description
+						 "Defines how addresses are allocated.";
+					}
+					container addresses {
+						leaf subnet-length {
+							type uint8;
+							units bits;
+							description
+							 "Mask length in bits.";
+						}
+						leaf customer {
+							type inet:ipv4-address;
+							description
+							 "Ip address at customer side.";
+						}
+						leaf provider {
+							type inet:ipv4-address;
+							description
+							 "Ip address at provider side.";
+						}
+						description
+						 "Link addressing.";
+					}
+					description
+					 "Address-family specific configuration.";
+				}
+				leaf qos-profile {
+					type string;
+					description
+					 "QoS profile to be used";
+				}
+				leaf svc-bandwidth {
+					type uint32;
+					units bps;
+					description
+					 "Service bandwidth of the connection.";
+				}
+				leaf svc-mtu {
+					type uint16;
+					units bytes;
+					description
+					 "MTU at service level.";
+				}
+				description
+				 "Parameters of the connection";
+			}
+			container management {
+				leaf type {
+					type identityref {
+						base management;
+					}
+					description
+					"Management type of the connection.";
+				}
+				leaf management-transport {
+					type identityref {
+						base rt:address-family;
+					}
+					description
+					 "Transport protocol used for management.";
+				}
+				leaf ipv4-address {
+					type inet:ipv4-address;
+					description
+					 "Management address";
+				}
+				leaf ipv6-address {
+					type inet:ipv6-address;
+					description
+					 "Management address";
+				}
+				description
+				 "Management configuration";
+			}
+			container multicast {
+			
+				description
+				 "multicast specific configuration";
+			}
+			container customer {
+				
+				leaf name {
+					type string;
+					description
+					 "Name of the customer router.";
+				}
+				leaf autonomous-system {
+					type uint32;
+					description
+					 "AS number.";
+				}
+				leaf interface {
+					type string;
+					description
+					 "Interface reference of the access.";
+				}
+				list lan-prefixes {
+					key lan;
+					
+					leaf lan {
+						type inet:ipv4-prefix;
+						description
+						 "Lan prefixes.";
+					}
+					description "
+						List of LAN prefixes for the site.
+						";
+				}
+				
+				description
+				 "Customer premise configuration.";
+			}
+			container provider {
+				leaf name {
+					type string;
+					description
+					 "Name of the provider router.";
+				}
+				leaf vrf {
+					type leafref {
+						path "../../../vrf/name";
+					}
+					description
+					 "Reference to VRF.";
+				}
+				leaf interface {
+					type string;
+					description
+					 "Interface reference of the access.";
+				}
+				leaf autonomous-system {
+					type uint32;
+					description
+					 "AS number.";
+				}
+				description
+				 "Provider premise configuration.";
+			}
+			description "List of sites.";
+		}
+	
+		description
+		 "Main container for L3VPN service configuration.";
+	}
+	
+	
+}

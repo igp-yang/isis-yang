@@ -1,0 +1,105 @@
+module: ietf-isis-sr
+augment /rt:routing/rt:routing-protocols/rt:routing-protocol/isis:isis:
+   +--rw segment-routing
+   |  +--rw enabled?    boolean
+   |  +--rw bindings
+   |     +--rw advertise
+   |     |  +--rw policies*   string
+   |     +--rw receive?     boolean
+   +--rw protocol-srgb {sr:protocol-srgb}?
+      +--rw srgb* [lower-bound upper-bound]
+         +--rw lower-bound    uint32
+         +--rw upper-bound    uint32
+augment /rt:routing/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:interfaces/isis:interface:
+   +--rw segment-routing
+      +--rw adjacency-sid
+         +--rw advertise-adj-group-sid* [group-id]
+         |  +--rw group-id    uint32
+         +--rw advertise-protection?      enumeration
+augment /rt:routing/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:interfaces/isis:interface/isis:fast-reroute:
+   +--rw ti-lfa {ti-lfa}?
+      +--rw enable?   boolean
+augment /rt:routing/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:interfaces/isis:interface/isis:fast-reroute/isis:lfa/isis:remote-lfa:
+   +--rw use-segment-routing-path?   boolean {remote-lfa-sr}?
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis:
+   +--ro segment-routing
+   |  +--ro enabled?    boolean
+   |  +--ro bindings
+   |     +--ro advertise
+   |     |  +--ro policies*   string
+   |     +--ro receive?     boolean
+   +--ro protocol-srgb {sr:protocol-srgb}?
+      +--ro srgb* [lower-bound upper-bound]
+         +--ro lower-bound    uint32
+         +--ro upper-bound    uint32
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:interfaces/isis:interface:
+   +--ro segment-routing
+      +--ro adjacency-sid
+         +--ro advertise-adj-group-sid* [group-id]
+         |  +--ro group-id    uint32
+         +--ro advertise-protection?      enumeration
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:interfaces/isis:interface/isis:adjacencies/isis:adjacency:
+   +--ro adjacency-sid* [value]
+      +--ro af?                     identityref
+      +--ro value                   uint32
+      +--ro weight?                 uint8
+      +--ro protection-requested?   boolean
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:database/isis:level-db/isis:lsp/isis:extended-is-neighbor/isis:neighbor:
+   +--ro sid-list* [value]
+      +--ro flags?         bits
+      +--ro weight?        uint8
+      +--ro neighbor-id?   isis:system-id
+      +--ro value          uint32
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:database/isis:level-db/isis:lsp/isis:mt-is-neighbor/isis:neighbor:
+   +--ro sid-list* [value]
+      +--ro flags?         bits
+      +--ro weight?        uint8
+      +--ro neighbor-id?   isis:system-id
+      +--ro value          uint32
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:database/isis:level-db/isis:lsp/isis:extended-ipv4-reachability/isis:prefixes:
+   +--ro sid-list* [value]
+      +--ro flags?       bits
+      +--ro algorithm?   uint8
+      +--ro value        uint32
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:database/isis:level-db/isis:lsp/isis:mt-extended-ipv4-reachability/isis:prefixes:
+   +--ro sid-list* [value]
+      +--ro flags?       bits
+      +--ro algorithm?   uint8
+      +--ro value        uint32
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:database/isis:level-db/isis:lsp/isis:ipv6-reachability/isis:prefixes:
+   +--ro sid-list* [value]
+      +--ro flags?       bits
+      +--ro algorithm?   uint8
+      +--ro value        uint32
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:database/isis:level-db/isis:lsp/isis:mt-ipv6-reachability/isis:prefixes:
+   +--ro sid-list* [value]
+      +--ro flags?       bits
+      +--ro algorithm?   uint8
+      +--ro value        uint32
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol/isis:isis/isis:database/isis:level-db/isis:lsp:
+   +--ro segment-routing-bindings* [fec range]
+      +--ro fec        string
+      +--ro range      uint16
+      +--ro flags?     bits
+      +--ro weight?    uint8
+      +--ro binding*
+         +--ro prefix-sid
+         |  +--ro sid-list* [value]
+         |     +--ro flags?       bits
+         |     +--ro algorithm?   uint8
+         |     +--ro value        uint32
+         +--ro ero-metric?                           uint32
+         +--ro ero
+         |  +--ro address-family?   identityref
+         |  +--ro loose?            boolean
+         |  +--ro address?          string
+         +--ro backup-ero
+         |  +--ro address-family?   identityref
+         |  +--ro loose?            boolean
+         |  +--ro address?          string
+         +--ro unnumbered-interface-id-ero
+         |  +--ro router-id?      string
+         |  +--ro interface-id?   uint32
+         +--ro backup-unnumbered-interface-id-ero
+            +--ro router-id?      string
+            +--ro interface-id?   uint32

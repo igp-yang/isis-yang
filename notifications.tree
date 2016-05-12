@@ -1,1 +1,133 @@
-TODO: notifications.tree
+notifications:
+   +---n database-overload                 
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro overload?         enumeration
+   +---n lsp-too-large                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-size?              uint32
+   |  +--ro lsp-id?                lsp-id
+   +---n corrupted-lsp-detected            
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n attempt-to-exceed-max-sequence    
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n id-len-mismatch                   
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-field-len?         uint8
+   |  +--ro raw-pdu?               binary
+   +---n max-area-addresses-mismatch       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro max-area-addresses?    uint8
+   |  +--ro raw-pdu?               binary
+   +---n own-lsp-purge                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n sequence-number-skipped           
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n authentication-type-failure       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n authentication-failure            
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n version-skew                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro protocol-version?      uint8
+   |  +--ro raw-pdu?               binary
+   +---n area-mismatch                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n rejected-adjacency                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro reason?                string
+   +---n protocols-supported-mismatch      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro protocols*             uint8
+   +---n lsp-error-detected                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro error-offset?          uint32
+   |  +--ro tlv-type?              uint8
+   +---n adjacency-change                  
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro neighbor?              string
+   |  +--ro neighbor-system-id?    system-id
+   |  +--ro level?                 level
+   |  +--ro state?                 enumeration
+   |  +--ro reason?                string
+   +---n lsp-received                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro sequence?              uint32
+   |  +--ro received-timestamp?    yang:timestamp
+   |  +--ro neighbor-system-id?    system-id
+   +---n lsp-generation                    
+      +--ro instance-name?    string
+      +--ro instance-level?   level
+      +--ro lsp-id?           lsp-id
+      +--ro sequence?         uint32
+      +--ro send-timestamp?   yang:timestamp

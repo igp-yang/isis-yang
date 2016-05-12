@@ -7,11 +7,18 @@
 <!ENTITY % yang SYSTEM "yang.ent">
 %yang;
 <!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC5880 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.5880.xml">
 <!ENTITY RFC6020 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
 <!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
 <!ENTITY RFC6242 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6242.xml">
 <!ENTITY RFC6536 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6536.xml">
+<!ENTITY RFC6020 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.6020.xml">
+<!ENTITY RFC3688 SYSTEM "http://xml2rfc.ietf.org/public/rfc/bibxml/reference.RFC.3688.xml">
 <!ENTITY YANG-RTG SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netmod-routing-cfg.xml">
+<!ENTITY BFD-YANG SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-bfd-yang.xml">
+<!ENTITY KEYCHAIN-YANG SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rtgwg-yang-key-chain.xml">
+<!ENTITY RTG-POLICY-YANG SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-rtgwg-policy-model.xml">
+<!ENTITY YANG-SR SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-spring-sr-yang.xml">
 ]>
 
 <?rfc strict="yes" ?>
@@ -24,7 +31,7 @@
 
 <rfc category="std">
   <front>
-    <title abbrev="isis-cfg">YANG Data Model for ISIS protocol</title>
+    <title abbrev="isis-cfg">YANG Data Model for IS-IS protocol</title>
     <author fullname="Stephane Litkowski" initials="S" surname="Litkowski">
       <organization>Orange</organization>
       <address>
@@ -50,18 +57,20 @@
       </address>
     </author>
 	<author fullname="Ladislav Lhotka" initials="L" surname="Lhotka">
-      <organization></organization>
+      <organization>CZ.NIC</organization>
       <address>
         <email>lhotka@nic.cz</email>
       </address>
     </author>
     <date year="2014"/>
     <area/>
-    <workgroup>ISIS Working Group</workgroup>
+    <workgroup>IS-IS Working Group</workgroup>
 
     <abstract>
       <t>This document defines a YANG data model that can be used to
-      configure and manage ISIS protocol on network elements.</t>
+      configure and manage IS-IS protocol on network elements.
+	  It also defined an extension module for segment routing configuration
+	  and operation.</t>
     </abstract>
     <note title="Requirements Language">
       <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
@@ -73,9 +82,9 @@
   <middle>
     <section anchor="introduction" title="Introduction">
       <t>
-      This document defines a YANG data model for ISIS routing
+      This document defines a YANG data model for IS-IS routing
       protocol.</t>
-      <t>The data model covers configuration of an ISIS routing
+      <t>The data model covers configuration of an IS-IS routing
       protocol instance as well as operational states.</t>
       <section anchor="tree-info" title="Tree diagram">
         <t>A simplified graphical representation of the data model is
@@ -86,10 +95,10 @@
       </section>
     </section>
     <section anchor="design" title="Design of the Data Model">
-      <t>The ISIS YANG module is divided in two main "isis" containers 
+      <t>The IS-IS YANG module is divided in two main "isis" containers 
       that are augmenting the
       "routing-protocol" lists in ietf-routing module with specific
-      ISIS parameters.</t>
+      IS-IS parameters.</t>
 	  <t>One container contains the writable parameters, while the other
 	  contains the operational states.</t>
       <t>The figure below describe the overall structure of the isis
@@ -99,23 +108,8 @@
 	&summary.tree;
       </figure>
 
-      <section anchor="yang-isis-global" title="ISIS Configuration">
-	    <t>
-		The ISIS configuration currently supports both VRF-centric and
-		protocol-centric configuration. This may be changed in future.
-		</t>
-		<t>
-		In a protocol-centric configuration, the isis configuration
-		is applied within the standard-routing-instance and the instance list 
-		helps to reference the routing-instance where ISIS is activated.
-		</t>
-		<t>
-		In a VRF-centric configuration, the isis configuration is applied 
-		directly within the appropriate routing-instance where ISIS 
-		is activated. 
-		In this case, the instance list will contain a single element.
-		</t>
-        <t>The ISIS configuration container is divided in:
+      <section anchor="yang-isis-global" title="IS-IS Configuration">
+        <t>The IS-IS configuration container is divided in:
 	<list style="symbols">
 	  <t>Global parameters.</t>
 	  <t>Per interface configuration (see <xref
@@ -136,39 +130,92 @@
 
       <section anchor="yang-level" title="Per-Level Parameters">
         <t>Some parameters support per level configuration. In this case, 
-		the parameter is built as a list, so different values could be used
-		for each level. The "level-all" permits to apply a value to both levels.</t>
+		the parameter is built as a container with three levels of configuration :
+		<list style="symbols">
+		<t>top level : corresponds to level-1-2, so the configuration applies to both levels.</t>
+		<t>level-1 : corresponds to level-1 specific parameter.</t>
+		<t>level-2 : corresponds to level-2 specific parameter.</t>
+		</list>
+		</t>
 		<figure>
 		<artwork>
-        +--rw priority* [level]
-        |  +--rw value?   uint8
-        |  +--rw level    level
+            +--rw priority
+            |  +--rw value?     uint8
+            |  +--rw level-1
+            |  |  +--rw value?   uint8
+            |  +--rw level-2
+            |     +--rw value?   uint8
 		</artwork>
 		</figure>
 		<t>Example :</t>
 		<figure>
 		<artwork>
         &lt;priority&gt;
-            &lt;value&gt;100&lt;/value&gt;
-			&lt;level&gt;level-1&lt;/level&gt;
-        &lt;/priority&gt;
-		&lt;priority&gt;
-            &lt;value&gt;200&lt;/value&gt;
-			&lt;level&gt;level-2&lt;/level&gt;
+            &lt;value&gt;250&lt;/value&gt;
+			&lt;level-1&gt;
+				&lt;value&gt;100&lt;/value&gt;
+			&lt;/level-1&gt;
+			&lt;level-2&gt;
+				&lt;value&gt;200&lt;/value&gt;
+			&lt;/level-2&gt;
         &lt;/priority&gt;
 		</artwork>
 		</figure>
+		<t>
+		An implementation SHOULD prefer a level specific parameter over level-all parameter. 
+		As example, if priority is 100 for level-1, 200 for level-2 and 250 for top level configuration, the implementation should use 100 for level-1 and 200 for level-2.
+		</t>
+		<t>
+		Some parameters like overload bit and route preference are not modelled for per level configuration. If an implementation supports per level configuration for such parameter,
+		the implementation SHOULD augment the current model by adding level-1 and level-2 containers and reusing existing configuration groupings.
+		</t>
+		
+		<t>Example of augmentation :</t>
+		<figure>
+		<artwork>
+augment "/rt:routing/" +
+        "rt:routing-protocols/rt:routing-protocol"+
+        "/isis:isis/isis:overload" {
+	when "rt:type = 'isis:isis'" {
+      description
+      "This augment IS-IS routing protocol when used";
+    }
+    description
+     "This augments IS-IS overload configuration
+      with per level configuration.";
+	
+	container level-1 {
+		uses isis:overload-global-cfg;
+		description
+		 "Level 1 configuration.";
+	}
+	container level-2 {
+		uses isis:overload-global-cfg;
+		description
+		 "Level 2 configuration.";
+	}
+	
+}
+		</artwork>
+		</figure>
+		<t>
+		Moreover, if an implementation does not support per level configuration for a parameter, like priority, which has per level configuration, 
+		the implementation SHOULD advertise a deviation to announce the non support of the level-1 and level-2 containers.
+		</t>
+		<t>
+		Finally, if an implementation supports per level configuration but does not support the level-1-2 configuration, it SHOULD also advertise a deviation.
+		</t>
       </section>
 
       <section anchor="yang-interface" title="Per-Interface Parameters">
-        <t>The per-interface section of the ISIS instance describes
+        <t>The per-interface section of the IS-IS instance describes
         the interface specific parameters.</t>
 		<t>The interface is a reference to an interface in the Interface YANG model.</t>
         <t>Each interface has interface-specific parameters that may have
 		a different value per level as described in previous section.
-		An interface-specific parameter always override an ISIS global
+		An interface-specific parameter always override an IS-IS global
         parameter .</t>
-		<t>Some parameters like BFD and hello-padding are defined as containers
+		<t>Some parameters like hello-padding are defined as containers
 		to permit easy extension by vendor specific modules.</t>
 
 	<figure>
@@ -195,22 +242,17 @@
 	  <t>The "candidate-disabled" permit to mark an interface to not be used as a backup.</t>
 	  </section>
 	  
-	  <section anchor="yang-sr" title="Segment Routing">
-	  <t>
-	  This item is still under discussion and some part of the proposed configuration may fit in a segment-routing specific model.
-	  </t>
-	  </section>
 	  
       <section anchor="yang-op" title="Operational State">
         <t>"isis" container provides operational states for
-        ISIS. This container is divided in multiple components:
+        IS-IS. This container is divided in multiple components:
 	<list style="symbols">
 		<t>system-counters : provides statistical informations about
 		the global system.</t>
 		<t>interface : provides configuration state information for
 		each interface.</t>
 	  <t>adjacencies: provides state information about current
-	  ISIS adjacencies.</t>
+	  IS-IS adjacencies.</t>
 	  <t>spf-log: provides information about SPF events on the
 	  node.</t>
 	  <t>lsp-log: provides information about LSP events on the
@@ -219,7 +261,6 @@
 	  <t>hostnames: provides information about system-id to
 	  hostname mappings.</t>
 	  <t>fast-reroute: provides information about IP FRR.</t>
-	  <t>segment-routing: provides information about segment-routing.</t>
 	</list></t>
       </section>
 
@@ -228,10 +269,10 @@
     <section anchor="RPC" title="RPC Operations">
       <t>The "ietf-isis" module defines two RPC operations:
       <list style="symbols">
-	<t>clear-isis-database: reset the content of a particular ISIS
+	<t>clear-isis-database: reset the content of a particular IS-IS
 	database and restart database synchronization with the
 	neighbors.</t>
-	<t>clear-isis-adjacency: restart a particular set of ISIS
+	<t>clear-isis-adjacency: restart a particular set of IS-IS
 	adjacencies.</t>
       </list></t>
 
@@ -281,7 +322,7 @@
 		  protocol supported.</t>
 		<t>lsp-error-detected : This notification is sent when the system
 		  receives a  LSP with a parse error.</t>
-		<t>adjacency-change : This notification is sent when an ISIS adjacency
+		<t>adjacency-change : This notification is sent when an IS-IS adjacency
 		   moves to Up state or to Down state.</t>
 		<t>lsp-received : This notification is sent when a LSP
 		  is received.</t>
@@ -296,28 +337,71 @@
 
     </section>
 
+	<section anchor="spring" title="Segment Routing">
+	<t>The IS-IS SR YANG module is augmenting IS-IS module for both configuration and operational states.</t>
+	<t>The IS-IS SR YANG module requires the base segment routing module (<xref target="I-D.ietf-spring-sr-yang"/>) to be supported as there is a strong
+	relationship between those modules.</t>
+	  
+      <t>The figure below describe the overall structure of the isis-sr
+      YANG module:</t>
+	<figure>
+	&ietf-isis-sr.tree;
+	</figure>
+		<section anchor="spring-activation" title="Segment Routing activation">
+		<t>
+		Activation of segment-routing IS-IS is done by setting the "enabled" leaf to true.
+		This triggers advertisement of segment-routing extensions based on the configuration parameters that have been
+		setup using the base segment routing module.
+		</t>
+		</section>
+		<section anchor="spring-ms" title="Advertising mapping server policy">
+		<t>
+		The base segment routing module defines mapping server policies. 
+		By default, IS-IS will not advertise nor receive any mapping server entry.
+		The IS-IS segment-routing module permits to advertise one or multiple mapping server policies through the "bindings/advertise/policies"
+		leaf-list.
+		The "bindings/receive" leaf permits to enable the reception of mapping server entries.
+		</t>
+		</section>
+		<section anchor="spring-ipfrr" title="IP Fast reroute">
+		<t>
+		IS-IS SR model augments the fast-reroute container under interface.
+		It brings the ability to activate TI-LFA (topology independent LFA) and also enhances remote LFA to use
+		segment-routing tunneling instead of LDP.
+		</t>
+		</section>
+	</section>
+
     <section anchor="interaction" title="Interaction with Other YANG Modules">
       <t>The "isis" configuration container augments the
-      "/rt:routing/rt:routing-instance/rt:routing-protocols/routing-protocol"
-      container of the ietf-routing module by defining ISIS specific
+      "/rt:routing/rt:routing-protocols/routing-protocol"
+      container of the ietf-routing <xref target="I-D.ietf-netmod-routing-cfg"/> module by defining IS-IS specific
       parameters.</t>
 	  <t>The "isis" module augments
       "/if:interfaces/if:interface"
       with ISO specific parameters.</t>
       <t>The "isis" operational state container augments the
-      "/rt:routing-state/rt:routing-instance/rt:routing-protocols/routing-protocol"
-      container of the ietf-routing module by defining ISIS specific
+      "/rt:routing-state/rt:routing-protocols/routing-protocol"
+      container of the ietf-routing module by defining IS-IS specific
       operational states.</t>
-      <t>Some ISIS specific routes attributes are added to route
+      <t>Some IS-IS specific routes attributes are added to route
       objects of the ietf-routing module by augmenting
       "/rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route" and
-      "/rt:active-route/rt:output/rt:route".</t>
+      "/rt:fib-route/rt:output/rt:route".</t>
+	  <t>The modules defined in this document use some groupings from ietf-keychain <xref target="I-D.ietf-rtgwg-yang-key-chain"/> and ietf-segment routing <xref target="I-D.ietf-spring-sr-yang"/>.</t>
     </section>
 
-    <section anchor="yang" title="YANG Module">
+    <section anchor="isis-yang" title="IS-IS YANG Module">
 
       <figure>
 	&ietf-isis.yang;
+      </figure>
+
+    </section>
+	<section anchor="isis-sr-yang" title="IS-IS Segment Routing YANG Module">
+
+      <figure>
+	&ietf-isis-sr.yang;
       </figure>
 
     </section>
@@ -326,7 +410,7 @@
       <t>Configuration and state data defined in this document are
       designed to be accessed via the NETCONF protocol <xref
       target="RFC6241"/>.</t>
-      <t>As ISIS is an IGP protocol (critical piece of the network),
+      <t>As IS-IS is an IGP protocol (critical piece of the network),
       ensuring stability and security of the protocol is mandatory for
       the network service.</t>
       <t>Authors recommends to implement NETCONF access control model
@@ -362,7 +446,7 @@
       for security reason. Authors recommends the usage of MD5 to
       present the authentication-key.</t>
       <t>Some authentication-key may also be present in the /isis
-      configuration.  When configuring ISIS using the NETCONF
+      configuration.  When configuring IS-IS using the NETCONF
       protocol, authors recommends the usage of secure transport of
       NETCONF using SSH (<xref target="RFC6242"/>).</t>
     </section>
@@ -376,19 +460,57 @@
       <t>TBD.</t>
     </section>
 
-    <section anchor="IANA" title="IANA Considerations">
-      <t>TBD.</t>
+  <section anchor="IANA" title="IANA Considerations">
+	<t>The IANA is requested to assign two new URIs from the
+   IETF XML registry (<xref target="RFC3688"/>). Authors are suggesting the following URIs : </t>
+   <figure>
+   <artwork>
+	URI: urn:ietf:params:xml:ns:yang:ietf-isis
+	Registrant Contact: IS-IS WG
+	XML: N/A, the requested URI is an XML namespace
+   </artwork>
+   </figure>
+   <t>
+   </t>
+   <figure>
+   <artwork>
+	URI: urn:ietf:params:xml:ns:yang:ietf-isis-sr
+	Registrant Contact: IS-IS WG
+	XML: N/A, the requested URI is an XML namespace
+   </artwork>
+   </figure>
+	<t>This document also requests two new YANG modules name in the YANG Module Names registry (<xref target="RFC6020"/>) with the following suggestion :</t>
+   <figure>
+   <artwork>
+	name: ietf-isis
+	namespace: urn:ietf:params:xml:ns:yang:ietf-isis
+	prefix: isis
+	reference: RFC XXXX
+   </artwork>
+   </figure>
+   <figure>
+   <artwork>
+	name: ietf-isis-sr
+	namespace: urn:ietf:params:xml:ns:yang:ietf-isis-sr
+	prefix: isis-sr
+	reference: RFC XXXX
+   </artwork>
+   </figure>
     </section>
 
   </middle>
   <back>
     <references title="Normative References">
       &RFC2119;
-      &RFC6020;
       &RFC6241;
       &RFC6242;
       &RFC6536;
+	  &RFC6020;
+	  &RFC3688;
       &YANG-RTG;
+	  &YANG-SR;
+	  &KEYCHAIN-YANG;
+	  &RFC5880;
     </references>
     <section anchor="rpc-example" title="Example: NETCONF &lt;get&gt; Reply">
       <t>This section gives an example of a reply to the NETCONF

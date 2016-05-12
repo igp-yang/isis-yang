@@ -1,1 +1,10 @@
-TODO: rpcs.tree
+rpcs:
+   +---x clear-adjacency    
+   |  +--ro input     
+   |     +--ro routing-protocol-instance-name    instance-state-ref
+   |     +--ro level?                            level
+   |     +--ro interface?                        string
+   +---x clear-database     
+      +--ro input     
+         +--ro routing-protocol-instance-name    instance-state-ref
+         +--ro level?                            level
