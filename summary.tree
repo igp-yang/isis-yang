@@ -1,0 +1,296 @@
+module: ietf-isis
+augment /rt:routing-state/rt:ribs/rt:rib/rt:routes/rt:route:
+   +--ro metric?       uint32
+   +--ro tag*          uint64
+   +--ro route-type?   enumeration
+augment /rt:fib-route/rt:output/rt:route:
+   +--ro metric?       uint32
+   +--ro tag*          uint64
+   +--ro route-type?   enumeration
+augment /if:interfaces/if:interface:
+   +--rw clns-mtu?   uint16
+augment /rt:routing/rt:routing-protocols/rt:routing-protocol:
+   +--rw isis
+      +--rw enable?                   boolean {admin-control}?
+      +--rw level-type?               level
+      +--rw system-id?                system-id
+      +--rw maximum-area-addresses?   uint8 {maximum-area-addresses}?
+      +--rw area-address*             area-address
+      +--rw mpls
+      |  +--rw ipv4-router-id?   inet:ipv4-address {ipv4-router-id}?
+      |  +--rw ipv6-router-id?   inet:ipv6-address {ipv6-router-id}?
+      |  +--rw igp-ldp-sync {igp-ldp-sync}?
+      +--rw reference-bandwidth?      uint32 {reference-bandwidth}?
+      +--rw lsp-mtu?                  uint16
+      +--rw lsp-lifetime?             uint16
+      +--rw lsp-refresh?              uint16 {lsp-refresh}?
+      +--rw graceful-restart {graceful-restart}?
+      |  +--rw enable?   boolean
+      +--rw node-tag {node-tag}?
+      |  +--rw node-tag* [tag]
+      |        ...
+      +--rw authentication
+      |  +--rw (authentication-type)?
+      |  |     ...
+      |  +--rw level-1
+      |  |     ...
+      |  +--rw level-2
+      |        ...
+      +--rw metric-type
+      |  +--rw value?     enumeration
+      |  +--rw level-1
+      |  |     ...
+      |  +--rw level-2
+      |        ...
+      +--rw default-metric
+      |  +--rw value?     wide-metric
+      |  +--rw level-1
+      |  |     ...
+      |  +--rw level-2
+      |        ...
+      +--rw af* [af] {nlpid-control}?
+      |  +--rw af        identityref
+      |  +--rw enable?   boolean
+      +--rw preference
+      |  +--rw (granularity)?
+      |        ...
+      +--rw overload
+      |  +--rw status?   boolean
+      +--rw overload-max-metric {overload-max-metric}?
+      |  +--rw timeout?   uint16
+      +--rw fast-reroute {fast-reroute}?
+      |  +--rw lfa {lfa}?
+      +--rw topologies* [name] {multi-topology}?
+      |  +--rw enable?           boolean
+      |  +--rw name              leafref
+      |  +--rw default-metric
+      |  |     ...
+      |  +--rw node-tag {node-tag}?
+      |  |     ...
+      |  +--rw fast-reroute {fast-reroute}?
+      |        ...
+      +--rw interfaces
+         +--rw interface* [name]
+               ...
+augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol:
+   +--ro isis
+      +--ro enable?                   boolean {admin-control}?
+      +--ro level-type?               level
+      +--ro system-id?                system-id
+      +--ro maximum-area-addresses?   uint8 {maximum-area-addresses}?
+      +--ro area-address*             area-address
+      +--ro mpls
+      |  +--ro ipv4-router-id?   inet:ipv4-address {ipv4-router-id}?
+      |  +--ro ipv6-router-id?   inet:ipv6-address {ipv6-router-id}?
+      |  +--ro igp-ldp-sync {igp-ldp-sync}?
+      +--ro reference-bandwidth?      uint32 {reference-bandwidth}?
+      +--ro lsp-mtu?                  uint16
+      +--ro lsp-lifetime?             uint16
+      +--ro lsp-refresh?              uint16 {lsp-refresh}?
+      +--ro graceful-restart {graceful-restart}?
+      |  +--ro enable?   boolean
+      +--ro node-tag {node-tag}?
+      |  +--ro node-tag* [tag]
+      |        ...
+      +--ro authentication
+      |  +--ro (authentication-type)?
+      |  |     ...
+      |  +--ro level-1
+      |  |     ...
+      |  +--ro level-2
+      |        ...
+      +--ro metric-type
+      |  +--ro value?     enumeration
+      |  +--ro level-1
+      |  |     ...
+      |  +--ro level-2
+      |        ...
+      +--ro default-metric
+      |  +--ro value?     wide-metric
+      |  +--ro level-1
+      |  |     ...
+      |  +--ro level-2
+      |        ...
+      +--ro af* [af] {nlpid-control}?
+      |  +--ro af        identityref
+      |  +--ro enable?   boolean
+      +--ro preference
+      |  +--ro (granularity)?
+      |        ...
+      +--ro overload
+      |  +--ro status?   boolean
+      +--ro overload-max-metric {overload-max-metric}?
+      |  +--ro timeout?   uint16
+      +--ro fast-reroute {fast-reroute}?
+      |  +--ro lfa {lfa}?
+      |  +--ro protected-routes
+      |  |     ...
+      |  +--ro nonprotected-routes
+      |  |     ...
+      |  +--ro protection-statistics* [frr-protection-method]
+      |        ...
+      +--ro topologies* [name]
+      |  +--ro name          leafref
+      |  +--ro fast-route {fast-reroute}?
+      |        ...
+      +--ro system-counters
+      |  +--ro level* [level]
+      |        ...
+      +--ro interfaces
+      |  +--ro interface* [interface]
+      |        ...
+      +--ro spf-log
+      |  +--ro event* [id]
+      |        ...
+      +--ro lsp-log
+      |  +--ro event* [id]
+      |        ...
+      +--ro database
+      |  +--ro level-db* [level]
+      |        ...
+      +--ro hostnames
+         +--ro hostname* [system-id]
+               ...
+rpcs:
+   +---x clear-adjacency    
+   |  +--ro input     
+   |     +--ro routing-protocol-instance-name    instance-state-ref
+   |     +--ro level?                            level
+   |     +--ro interface?                        string
+   +---x clear-database     
+      +--ro input     
+         +--ro routing-protocol-instance-name    instance-state-ref
+         +--ro level?                            level
+notifications:
+   +---n database-overload                 
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro overload?         enumeration
+   +---n lsp-too-large                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-size?              uint32
+   |  +--ro lsp-id?                lsp-id
+   +---n corrupted-lsp-detected            
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n attempt-to-exceed-max-sequence    
+   |  +--ro instance-name?    string
+   |  +--ro instance-level?   level
+   |  +--ro lsp-id?           lsp-id
+   +---n id-len-mismatch                   
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro pdu-field-len?         uint8
+   |  +--ro raw-pdu?               binary
+   +---n max-area-addresses-mismatch       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro max-area-addresses?    uint8
+   |  +--ro raw-pdu?               binary
+   +---n own-lsp-purge                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n sequence-number-skipped           
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   +---n authentication-type-failure       
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n authentication-failure            
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n version-skew                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro protocol-version?      uint8
+   |  +--ro raw-pdu?               binary
+   +---n area-mismatch                     
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   +---n rejected-adjacency                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro reason?                string
+   +---n protocols-supported-mismatch      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro protocols*             uint8
+   +---n lsp-error-detected                
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro raw-pdu?               binary
+   |  +--ro error-offset?          uint32
+   |  +--ro tlv-type?              uint8
+   +---n adjacency-change                  
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro neighbor?              string
+   |  +--ro neighbor-system-id?    system-id
+   |  +--ro level?                 level
+   |  +--ro state?                 enumeration
+   |  +--ro reason?                string
+   +---n lsp-received                      
+   |  +--ro instance-name?         string
+   |  +--ro instance-level?        level
+   |  +--ro interface-name?        string
+   |  +--ro interface-level?       level
+   |  +--ro extended-circuit-id?   extended-circuit-id
+   |  +--ro lsp-id?                lsp-id
+   |  +--ro sequence?              uint32
+   |  +--ro received-timestamp?    yang:timestamp
+   |  +--ro neighbor-system-id?    system-id
+   +---n lsp-generation                    
+      +--ro instance-name?    string
+      +--ro instance-level?   level
+      +--ro lsp-id?           lsp-id
+      +--ro sequence?         uint32
+      +--ro send-timestamp?   yang:timestamp
