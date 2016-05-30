@@ -57,6 +57,13 @@ module ietf-isis {
     "The YANG module defines a generic configuration model for 
     ISIS common across all of the vendor implementations.";
 
+ revision 2016-05-30 {
+	description
+	 "
+		Added container before af list
+	 ";
+	 reference "";
+ }
  revision 2016-03-21 {
 	description
 	 " 
@@ -64,14 +71,14 @@ module ietf-isis {
 	 - added BFD leaf (no more BFD protocol model)
 	 - changed keychain module reference
 	 ";
-	reference "draft-ietf-isis-yang-isis-cfg-09";
+	reference "draft-ietf-isis-yang-isis-cfg-08";
  }
  
  revision 2015-12-17 {
 	description
 	 "Moved lists to containers+groupings for per level
 	 configuration.";
-	reference "draft-ietf-isis-yang-isis-cfg-08";
+	reference "";
  }
  revision 2015-11-25 {
 	description
@@ -2118,28 +2125,30 @@ grouping hello-interval-cfg {
 			description "Default metric global cfg.";
 		}
 	
-        list af {
-          if-feature nlpid-control;
-          key af;
-          leaf af {
-            type identityref {
-              base rt:address-family;
-            }
-            description
-             "Address-family";
-          }
-          
-          leaf enable {
-            type boolean;
-            description
-              "Describes the activation state of the 
-               AF.";
-          }
-          description
-           "This list permits activation
-           of new address families.";
-          
-        }
+		container afs {
+			list af {
+			  if-feature nlpid-control;
+			  key af;
+			  leaf af {
+				type identityref {
+				  base rt:address-family;
+				}
+				description
+				 "Address-family";
+			  }
+			  
+			  leaf enable {
+				type boolean;
+				description
+				  "Describes the activation state of the 
+				   AF.";
+			  }
+			  description
+			   "This list permits activation
+			   of new address families.";
+			  
+			}
+		}
         
 		container preference {
 			uses route-preference-global-cfg;
@@ -2407,20 +2416,22 @@ grouping hello-interval-cfg {
 		 "BFD configuration.";
 	}
 	
-	list af {
-	  key af;
-	  
-	  leaf af {
-		type identityref {
-		  base rt:address-family;
+	container afs {
+		list af {
+		  key af;
+		  
+		  leaf af {
+			type identityref {
+			  base rt:address-family;
+			}
+			description 
+			  "Address-family"; 
+		  }
+		 
+		  
+		  description
+		   "List of AFs.";
 		}
-		description 
-		  "Address-family"; 
-	  }
-	 
-	  
-	  description
-	   "List of AFs.";
 	}
 
 	
