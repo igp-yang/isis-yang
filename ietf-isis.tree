@@ -116,9 +116,10 @@ augment /rt:routing/rt:routing-protocols/rt:routing-protocol:
       |  |  +--rw value?   wide-metric
       |  +--rw level-2
       |     +--rw value?   wide-metric
-      +--rw af* [af] {nlpid-control}?
-      |  +--rw af        identityref
-      |  +--rw enable?   boolean
+      +--rw afs
+      |  +--rw af* [af] {nlpid-control}?
+      |     +--rw af        identityref
+      |     +--rw enable?   boolean
       +--rw preference
       |  +--rw (granularity)?
       |     +--:(detail)
@@ -230,8 +231,9 @@ augment /rt:routing/rt:routing-protocols/rt:routing-protocol:
             |     +--rw value?   wide-metric
             +--rw bfd {bfd}?
             |  +--rw enabled?   boolean
-            +--rw af* [af]
-            |  +--rw af    identityref
+            +--rw afs
+            |  +--rw af* [af]
+            |     +--rw af    identityref
             +--rw mpls
             |  +--rw igp-ldp-sync {igp-ldp-sync}?
             |     +--rw enable?   boolean
@@ -364,9 +366,10 @@ augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol:
       |  |  +--ro value?   wide-metric
       |  +--ro level-2
       |     +--ro value?   wide-metric
-      +--ro af* [af] {nlpid-control}?
-      |  +--ro af        identityref
-      |  +--ro enable?   boolean
+      +--ro afs
+      |  +--ro af* [af] {nlpid-control}?
+      |     +--ro af        identityref
+      |     +--ro enable?   boolean
       +--ro preference
       |  +--ro (granularity)?
       |     +--:(detail)
@@ -533,8 +536,9 @@ augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol:
       |     |     +--ro value?   wide-metric
       |     +--ro bfd {bfd}?
       |     |  +--ro enabled?   boolean
-      |     +--ro af* [af]
-      |     |  +--ro af    identityref
+      |     +--ro afs
+      |     |  +--ro af* [af]
+      |     |     +--ro af    identityref
       |     +--ro mpls
       |     |  +--ro igp-ldp-sync {igp-ldp-sync}?
       |     |     +--ro enable?   boolean

@@ -2148,6 +2148,8 @@ grouping hello-interval-cfg {
 			   of new address families.";
 			  
 			}
+			description
+			 "Container for address-families";
 		}
         
 		container preference {
@@ -2432,6 +2434,8 @@ grouping hello-interval-cfg {
 		  description
 		   "List of AFs.";
 		}
+		description
+			 "Container for address-families";
 	}
 
 	
