@@ -133,20 +133,21 @@ augment /rt:routing/rt:routing-protocols/rt:routing-protocol:
       |  +--rw timeout?   uint16
       +--rw fast-reroute {fast-reroute}?
       |  +--rw lfa {lfa}?
-      +--rw topologies* [name] {multi-topology}?
-      |  +--rw enable?           boolean
-      |  +--rw name              leafref
-      |  +--rw default-metric
-      |  |  +--rw value?     wide-metric
-      |  |  +--rw level-1
-      |  |  |  +--rw value?   wide-metric
-      |  |  +--rw level-2
-      |  |     +--rw value?   wide-metric
-      |  +--rw node-tag {node-tag}?
-      |  |  +--rw node-tag* [tag]
-      |  |     +--rw tag    uint32
-      |  +--rw fast-reroute {fast-reroute}?
-      |     +--rw lfa {lfa}?
+      +--rw multi-topology {multi-topology}?
+      |  +--rw topology* [name]
+      |     +--rw enable?           boolean
+      |     +--rw name              leafref
+      |     +--rw default-metric
+      |     |  +--rw value?     wide-metric
+      |     |  +--rw level-1
+      |     |  |  +--rw value?   wide-metric
+      |     |  +--rw level-2
+      |     |     +--rw value?   wide-metric
+      |     +--rw node-tag {node-tag}?
+      |     |  +--rw node-tag* [tag]
+      |     |     +--rw tag    uint32
+      |     +--rw fast-reroute {fast-reroute}?
+      |        +--rw lfa {lfa}?
       +--rw interfaces
          +--rw interface* [name]
             +--rw name                       if:interface-ref
@@ -238,27 +239,40 @@ augment /rt:routing/rt:routing-protocols/rt:routing-protocol:
             |  +--rw igp-ldp-sync {igp-ldp-sync}?
             |     +--rw enable?   boolean
             +--rw fast-reroute {fast-reroute}?
-            |  +--rw lfa* [level] {lfa}?
+            |  +--rw lfa {lfa}?
             |     +--rw candidate-disabled?   boolean
             |     +--rw enable?               boolean
             |     +--rw remote-lfa {remote-lfa}?
             |     |  +--rw enable?   boolean
-            |     +--rw level                 level
-            +--rw topologies* [name]
-               +--rw name            leafref
-               +--rw fast-reroute {fast-reroute}?
-               |  +--rw lfa* [level] {lfa}?
-               |     +--rw candidate-disabled?   boolean
-               |     +--rw enable?               boolean
-               |     +--rw remote-lfa {remote-lfa}?
-               |     |  +--rw enable?   boolean
-               |     +--rw level                 level
-               +--rw metric
-                  +--rw value?     wide-metric
-                  +--rw level-1
-                  |  +--rw value?   wide-metric
-                  +--rw level-2
-                     +--rw value?   wide-metric
+            |     +--rw level-1
+            |     |  +--rw candidate-disabled?   boolean
+            |     |  +--rw enable?               boolean
+            |     |  +--rw remote-lfa {remote-lfa}?
+            |     |     +--rw enable?   boolean
+            |     +--rw level-2
+            |        +--rw candidate-disabled?   boolean
+            |        +--rw enable?               boolean
+            |        +--rw remote-lfa {remote-lfa}?
+            |           +--rw enable?   boolean
+            +--rw multi-topology {multi-topology}?
+               +--rw topology* [name]
+                  +--rw name            leafref
+                  +--rw fast-reroute {fast-reroute}?
+                  |  +--rw lfa {lfa}?
+                  |     +--rw candidate-disabled?   boolean
+                  |     +--rw enable?               boolean
+                  |     +--rw remote-lfa {remote-lfa}?
+                  |     |     ...
+                  |     +--rw level-1
+                  |     |     ...
+                  |     +--rw level-2
+                  |           ...
+                  +--rw metric
+                     +--rw value?     wide-metric
+                     +--rw level-1
+                     |  +--rw value?   wide-metric
+                     +--rw level-2
+                        +--rw value?   wide-metric
 augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol:
    +--ro isis
       +--ro enable?                   boolean {admin-control}?
@@ -543,12 +557,21 @@ augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol:
       |     |  +--ro igp-ldp-sync {igp-ldp-sync}?
       |     |     +--ro enable?   boolean
       |     +--ro fast-reroute {fast-reroute}?
-      |     |  +--ro lfa* [level] {lfa}?
+      |     |  +--ro lfa {lfa}?
       |     |     +--ro candidate-disabled?   boolean
       |     |     +--ro enable?               boolean
       |     |     +--ro remote-lfa {remote-lfa}?
       |     |     |  +--ro enable?   boolean
-      |     |     +--ro level                 level
+      |     |     +--ro level-1
+      |     |     |  +--ro candidate-disabled?   boolean
+      |     |     |  +--ro enable?               boolean
+      |     |     |  +--ro remote-lfa {remote-lfa}?
+      |     |     |     +--ro enable?   boolean
+      |     |     +--ro level-2
+      |     |        +--ro candidate-disabled?   boolean
+      |     |        +--ro enable?               boolean
+      |     |        +--ro remote-lfa {remote-lfa}?
+      |     |           +--ro enable?   boolean
       |     +--ro adjacencies
       |     |  +--ro adjacency*
       |     |     +--ro neighbor-systype?               level
@@ -569,12 +592,21 @@ augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol:
       |     |  |  +--ro level-2
       |     |  |     +--ro value?   wide-metric
       |     |  +--ro fast-reroute {fast-reroute}?
-      |     |  |  +--ro lfa* [level] {lfa}?
+      |     |  |  +--ro lfa {lfa}?
       |     |  |     +--ro candidate-disabled?   boolean
       |     |  |     +--ro enable?               boolean
       |     |  |     +--ro remote-lfa {remote-lfa}?
       |     |  |     |  +--ro enable?   boolean
-      |     |  |     +--ro level                 level
+      |     |  |     +--ro level-1
+      |     |  |     |  +--ro candidate-disabled?   boolean
+      |     |  |     |  +--ro enable?               boolean
+      |     |  |     |  +--ro remote-lfa {remote-lfa}?
+      |     |  |     |        ...
+      |     |  |     +--ro level-2
+      |     |  |        +--ro candidate-disabled?   boolean
+      |     |  |        +--ro enable?               boolean
+      |     |  |        +--ro remote-lfa {remote-lfa}?
+      |     |  |              ...
       |     |  +--ro adjacencies
       |     |     +--ro adjacency*
       |     |        +--ro neighbor-systype?               level
@@ -773,11 +805,11 @@ augment /rt:routing-state/rt:routing-protocols/rt:routing-protocol:
       |        |     +--ro ipv4-source-router-id?   inet:ipv4-address
       |        |     +--ro ipv6-source-router-id?   inet:ipv6-address
       |        +--ro router-capabilities*
-      |           +--ro flags?      bits
-      |           +--ro node-tag {node-tag}?
+      |           +--ro flags?       bits
+      |           +--ro node-tags {node-tag}?
       |           |  +--ro node-tag*
       |           |     +--ro tag?   uint32
-      |           +--ro binary?     binary
+      |           +--ro binary?      binary
       +--ro hostnames
          +--ro hostname* [system-id]
             +--ro system-id    system-id

@@ -60,14 +60,8 @@ augment /rt:routing/rt:routing-protocols/rt:routing-protocol:
       |  +--rw timeout?   uint16
       +--rw fast-reroute {fast-reroute}?
       |  +--rw lfa {lfa}?
-      +--rw topologies* [name] {multi-topology}?
-      |  +--rw enable?           boolean
-      |  +--rw name              leafref
-      |  +--rw default-metric
-      |  |     ...
-      |  +--rw node-tag {node-tag}?
-      |  |     ...
-      |  +--rw fast-reroute {fast-reroute}?
+      +--rw multi-topology {multi-topology}?
+      |  +--rw topology* [name]
       |        ...
       +--rw interfaces
          +--rw interface* [name]

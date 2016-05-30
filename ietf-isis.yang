@@ -61,6 +61,8 @@ module ietf-isis {
 	description
 	 "
 		Added container before af list
+		Added container before topology list
+		Aligned LFA if per level cfg
 	 ";
 	 reference "";
  }
@@ -1023,43 +1025,23 @@ module ietf-isis {
      "This group defines interface
      configuration of IPFRR.";
       
-      list lfa {
-        if-feature lfa;
-        
-        key level;
-        
-        leaf candidate-disabled {
-          type boolean;
-		  default false;
-          description
-           "Prevent the interface to be used as backup.";
-        }
-        leaf enable {
-          type boolean;
-          description
-           "Activates LFA.
-           This model assumes activation
-           of per-prefix LFA.";
-        }  
-        
-        container remote-lfa {
-          if-feature remote-lfa;
-          leaf enable {
-            type boolean;
-            description
-            "Activates rLFA.";
-          }
-          description
-           "remote LFA configuration.";  
-        }
-        leaf level {
-          type level;
-          description
-            "Level applicability.";
-        }
-        description
-         "LFA configuration.";
-      }
+	  container lfa {
+		if-feature lfa;
+		uses lfa-if-cfg;
+		container level-1 { 
+			uses lfa-if-cfg;
+			description
+			 "LFA level 21 config";
+		}
+		container level-2 {
+			uses lfa-if-cfg;
+			description
+			 "LFA level 2 config";
+		}
+		description
+			"LFA config";
+	  }
+      
 
   }
   
@@ -1707,7 +1689,7 @@ module ietf-isis {
         description
          "Flags associated with router capability.";
       }
-      container node-tag {
+      container node-tags {
         if-feature node-tag;
         list node-tag {
           leaf tag {
@@ -1967,7 +1949,35 @@ grouping hello-interval-cfg {
 	  description
 	   "Grouping for interface metric";
 	}
-
+	grouping lfa-if-cfg {
+		leaf candidate-disabled {
+          type boolean;
+		  default false;
+          description
+           "Prevent the interface to be used as backup.";
+        }
+        leaf enable {
+          type boolean;
+          description
+           "Activates LFA.
+           This model assumes activation
+           of per-prefix LFA.";
+        }  
+        
+        container remote-lfa {
+          if-feature remote-lfa;
+          leaf enable {
+            type boolean;
+            description
+            "Activates rLFA.";
+          }
+          description
+           "remote LFA configuration.";  
+		}
+		description
+		 "Grouping for LFA 
+		 interface configuration";
+	}
   grouping isis-global-cfg {
 	description
 	 "Defines the ISIS global configuration.";
@@ -2535,36 +2545,41 @@ grouping hello-interval-cfg {
 		 description
 			  "IPFRR.";
 		}
-        list topologies {
-          if-feature multi-topology;
-          
-          key "name";
-          
-		  leaf enable {
-			type boolean;
-			description
-			 "Control enabling of topologies";
-		  }
-		  
-          leaf name {
-            type leafref {
-               path "../../../../../rt:ribs/rt:rib/rt:name";
-             }
+		container multi-topology {
+			if-feature multi-topology;
+			list topology {
+			  
+			  
+			  key "name";
+			  
+			  leaf enable {
+				type boolean;
+				description
+				 "Control enabling of topologies";
+			  }
+			  
+			  leaf name {
+				type leafref {
+				   path "../../../../../../rt:ribs/rt:rib/rt:name";
+				 }
 
-            description "RIB";          
-          }
-          
-          uses isis-global-topologies-cfg;
-		  container fast-reroute {
-		   if-feature fast-reroute;
-		   uses fast-reroute-global-cfg;
-		   description
-			  "IPFRR.";
-		  }
-		  
-          description
-            "List of topologies";
-        }
+				description "RIB";          
+			  }
+			  
+			  uses isis-global-topologies-cfg;
+			  container fast-reroute {
+			   if-feature fast-reroute;
+			   uses fast-reroute-global-cfg;
+			   description
+				  "IPFRR.";
+			  }
+			  
+			  description
+				"List of topologies";
+			}
+			description
+			 "Container for multi-topology";
+		}
 		
         container interfaces {    
           list interface {
@@ -2584,28 +2599,34 @@ grouping hello-interval-cfg {
 			description
 			  "IPFRR.";
 		  }
-		  list topologies {
-			  key name;
-			  
-			  leaf name {
-				type leafref {
-					path "../../../../../../../"+
-					"rt:ribs/rt:rib/rt:name";
-				}
+		  container multi-topology {
+			  if-feature multi-topology;
+			  list topology {
+				  key name;
+				  
+				  leaf name {
+					type leafref {
+						path "../../../../../../../../"+
+						"rt:ribs/rt:rib/rt:name";
+					}
 
-				description
-				 "Name of RIB.";
+					description
+					 "Name of RIB.";
+				  }
+				  container fast-reroute {
+					if-feature fast-reroute;
+					uses fast-reroute-if-cfg;
+					description
+					 "IPFRR.";
+				  }
+				  uses isis-if-topologies-cfg;
+				  description
+				   "List of topologies.";
 			  }
-			  container fast-reroute {
-			    if-feature fast-reroute;
-			    uses fast-reroute-if-cfg;
-				description
-			     "IPFRR.";
-		      }
-	          uses isis-if-topologies-cfg;
-			  description
-			   "List of topologies.";
-	      }
+			description
+			 "Container for multi-topology";
+		  }
+		  
 		  description
 			"List of ISIS interfaces.";
           }
